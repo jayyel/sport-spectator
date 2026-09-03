@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sport Spectator — Miami Sports</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B0F1A; --ink-2:#10162A; --ink-3:#161D35;
+  --line:rgba(250,248,244,.13); --line-soft:rgba(250,248,244,.07);
+  --cream:#FAF8F4; --cream-70:rgba(250,248,244,.70);
+  --cream-45:rgba(250,248,244,.45); --cream-28:rgba(250,248,244,.28);
+  --blue:#3B6BD6; --azure:#1B8FE0; --cyan:#22D3EE;
+  --pink:#FF2E63; --coral:#FF4F2D; --orange:#FF7A29;
+  --mia:#00A3E0; --dol:#008E97; --can:#F47321;
+  --heat:#F9A01B; --pan:#C8102E; --imcf:#F7B5CD;
+  --spectrum:linear-gradient(90deg,var(--blue),var(--azure),var(--cyan),var(--pink),var(--coral),var(--orange));
+  --wrap:1340px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--ink);color:var(--cream);
+  font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 28px}
+.eyebrow{font-size:10.5px;font-weight:800;font-stretch:88%;letter-spacing:.20em;text-transform:uppercase;color:var(--orange)}
+
+/* ── ticker ───────────────────────────────── */
+.ticker{position:relative;background:#080B14;border-bottom:1px solid var(--line-soft);overflow:hidden}
+.ticker::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:var(--spectrum)}
+.ticker-inner{display:flex;align-items:center;height:36px}
+.ticker-flag{display:flex;align-items:center;gap:7px;flex:0 0 auto;padding:0 26px 0 28px;height:100%;
+  background:var(--pink);font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  clip-path:polygon(0 0,100% 0,calc(100% - 12px) 100%,0 100%);z-index:2}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--cream);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.ticker-track{overflow:hidden;flex:1;mask-image:linear-gradient(90deg,transparent,#000 26px,#000 94%,transparent)}
+.ticker-run{display:flex;width:max-content;animation:run 64s linear infinite}
+.ticker:hover .ticker-run{animation-play-state:paused}
+@keyframes run{to{transform:translateX(-50%)}}
+.ticker-item{display:flex;align-items:center;gap:10px;padding:0 22px;white-space:nowrap;font-size:12.5px;font-weight:500;color:var(--cream-70)}
+.ticker-item b{font-weight:700;color:var(--cream);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.tdot{width:5px;height:5px;border-radius:50%;flex:0 0 auto}
+
+/* ── masthead ─────────────────────────────── */
+.masthead{border-bottom:1px solid var(--line);background:rgba(11,15,26,.93);backdrop-filter:blur(10px);position:sticky;top:0;z-index:40}
+.mast-inner{display:flex;align-items:center;gap:34px;height:70px}
+.logo{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.mark{width:32px;height:32px;border-radius:50%;flex:0 0 auto;position:relative;
+  background:conic-gradient(from 200deg,var(--blue),var(--azure),var(--cyan),var(--pink),var(--coral),var(--orange),var(--blue))}
+.mark::after{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--ink)}
+.wordmark{font-size:18px;font-weight:800;font-stretch:105%;letter-spacing:.13em;text-transform:uppercase;line-height:1}
+.wordmark span{display:block;font-size:8.5px;font-weight:600;letter-spacing:.26em;color:var(--cream-45);margin-top:4px}
+nav{display:flex;gap:17px;font-size:12.5px;font-weight:600;color:var(--cream-70);flex:1;white-space:nowrap}
+nav a{padding:4px 0;border-bottom:2px solid transparent}
+nav a:hover,nav a[aria-current]{color:var(--cream);border-bottom-color:var(--coral)}
+.mast-right{display:flex;align-items:center;gap:14px;flex:0 0 auto}
+.clock{font-size:12px;font-weight:600;color:var(--cream-45)}
+.btn-press{font-size:12px;font-weight:700;letter-spacing:.06em;padding:8px 15px;border-radius:2px;border:1px solid var(--line)}
+.btn-press:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+
+/* ═══ ROW 1 — GAMES OF THE WEEK ═══ */
+.marquee{border-bottom:1px solid var(--line);padding:16px 0 18px;background:
+  radial-gradient(900px 200px at 20% 0%,rgba(255,79,45,.09),transparent 70%),
+  radial-gradient(900px 200px at 80% 0%,rgba(59,107,214,.09),transparent 70%)}
+.mq-head{display:flex;align-items:baseline;justify-content:space-between;gap:18px;margin-bottom:12px}
+.mq-head h1{font-size:13px;font-weight:800;letter-spacing:.20em;text-transform:uppercase;color:var(--orange);margin:0}
+.mq-note{font-size:11.5px;color:var(--cream-28);font-weight:500}
+.mq-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr)}
+.mq-list li{border-left:1px solid var(--line-soft);padding:0 26px}
+.mq-list li:first-child{border-left:0;padding-left:0}
+.mq-list li:last-child{padding-right:0}
+.mq-list a{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start}
+.rank{font-size:38px;font-weight:900;line-height:.74;letter-spacing:-.05em;
+  -webkit-text-stroke:1.5px var(--rk);color:transparent}
+.mq-list li:nth-child(1){--rk:var(--orange)}
+.mq-list li:nth-child(2){--rk:var(--pink)}
+.mq-list li:nth-child(3){--rk:var(--azure)}
+.mq-line{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:5px}
+.comp{font-size:9.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--rk);white-space:nowrap}
+.mq-when{font-size:11px;font-weight:600;color:var(--cream-45);white-space:nowrap}
+.mq-list h2{font-size:19px;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:0 0 5px}
+.mq-why{font-size:12.5px;line-height:1.4;color:var(--cream-45);margin:0}
+.mq-list a:hover h2{color:var(--rk)}
+
+/* ═══ ROW 2 — MIAMI SLATE ═══ */
+.slate{border-bottom:1px solid var(--line);padding:15px 0 17px}
+.slate-head{display:flex;align-items:baseline;gap:14px;margin-bottom:11px}
+.slate-head h2{font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin:0}
+.slate-head .date{font-size:11.5px;font-weight:600;color:var(--cream-45)}
+.slate-head .sp{flex:1}
+.morelink{font-size:11.5px;font-weight:700;color:var(--cream-70);border-bottom:1px solid var(--coral);padding-bottom:1px;white-space:nowrap}
+.morelink:hover{color:var(--orange)}
+.rail-nav{display:flex;gap:6px}
+.rail-btn{width:26px;height:26px;border:1px solid var(--line);background:none;color:var(--cream-70);border-radius:2px;cursor:pointer;font-size:13px;line-height:1;padding:0}
+.rail-btn:hover{background:var(--ink-3);color:var(--cream)}
+
+.rail{display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;padding-bottom:8px;scroll-snap-type:x proximity}
+.rail::-webkit-scrollbar{height:4px}
+.rail::-webkit-scrollbar-thumb{background:var(--ink-3);border-radius:9px}
+.rail::-webkit-scrollbar-track{background:transparent}
+
+.game{flex:0 0 232px;scroll-snap-align:start;background:var(--ink-2);border:1px solid var(--line-soft);
+  border-radius:3px;position:relative;padding:9px 12px 10px 14px;overflow:hidden}
+.game::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent,var(--blue))}
+.game:hover{border-color:var(--line);background:var(--ink-3)}
+.g-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.league{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent,var(--cream-45));display:flex;align-items:center;gap:5px;white-space:nowrap}
+.star{color:var(--orange);font-size:11px;line-height:1}
+.when{font-size:10.5px;font-weight:700;color:var(--cream-45);white-space:nowrap;letter-spacing:.03em}
+.live-chip{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--pink);white-space:nowrap}
+.live-chip .pulse{background:var(--pink);width:5px;height:5px}
+.t{display:flex;align-items:center;gap:8px;height:21px}
+.abbr{font-size:9.5px;font-weight:800;letter-spacing:.02em;width:28px;flex:0 0 auto}
+.t-name{font-size:13.5px;font-weight:700;flex:1;letter-spacing:-.008em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t.away .t-name{font-weight:600;color:var(--cream-70)}
+.val{font-size:11px;font-weight:600;color:var(--cream-28);white-space:nowrap}
+.val.score{font-size:15px;font-weight:800;color:var(--cream);letter-spacing:-.02em}
+.val.score.dim{color:var(--cream-28);font-weight:700}
+.game.off{background:transparent;border-style:dashed;border-color:var(--line)}
+.cd{display:flex;align-items:baseline;gap:8px;height:42px;padding-top:4px}
+.cd b{font-size:26px;font-weight:900;letter-spacing:-.03em;line-height:1}
+.cd span{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cream-45)}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:5px 10px;border-radius:20px;border:1px solid var(--line);color:var(--cream-45);background:none;cursor:pointer}
+.chip:hover{color:var(--cream);border-color:var(--cream-45)}
+.chip[data-on="true"]{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+
+/* ── body grid ────────────────────────────── */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:52px;padding:40px 0 60px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:2px solid var(--cream);margin-bottom:22px}
+.sec-title{font-size:24px;font-weight:900;letter-spacing:-.015em;margin:0}
+.sec-link{font-size:12px;font-weight:600;color:var(--cream-45)}
+.sec-link:hover{color:var(--cream)}
+.lead{display:grid;grid-template-columns:1.15fr 1fr;gap:26px;padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:6px;align-items:center}
+.photo{aspect-ratio:16/10;border-radius:2px;position:relative;overflow:hidden;border:1px solid var(--line-soft);
+  background:linear-gradient(135deg,var(--ink-3),var(--ink-2));display:grid;place-items:center}
+.photo::after{content:"photo";font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--cream-28)}
+.photo .corner{position:absolute;width:20px;height:20px;border:2px solid var(--cream);opacity:.55}
+.photo .c1{top:11px;left:11px;border-right:0;border-bottom:0}
+.photo .c2{bottom:11px;right:11px;border-left:0;border-top:0}
+.tag{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.tag i{width:7px;height:7px;border-radius:50%;background:currentColor;font-style:normal}
+.lead h3{font-size:clamp(24px,2.6vw,32px);font-weight:900;line-height:1.06;letter-spacing:-.022em;margin:12px 0 11px}
+.lead p{font-size:14px;line-height:1.6;color:var(--cream-70);margin:0 0 14px;max-width:52ch}
+.byline{font-size:11px;font-weight:600;color:var(--cream-28);letter-spacing:.06em}
+.stories{list-style:none;margin:0;padding:0}
+.stories li{border-bottom:1px solid var(--line-soft)}
+.stories a{display:grid;grid-template-columns:64px 1fr auto;gap:18px;align-items:center;padding:17px 0}
+.stories a:hover h4{color:var(--orange)}
+.thumb{width:64px;height:64px;border-radius:2px;background:var(--ink-2);border:1px solid var(--line-soft);display:grid;place-items:center}
+.thumb b{font-size:8px;font-weight:700;letter-spacing:.16em;color:var(--cream-28)}
+.stories h4{font-size:16px;font-weight:700;line-height:1.24;letter-spacing:-.012em;margin:7px 0 0;max-width:58ch}
+.stamp{font-size:11px;font-weight:600;color:var(--cream-28);white-space:nowrap}
+
+/* ── sidebar ──────────────────────────────── */
+aside{display:flex;flex-direction:column;gap:34px}
+.card{border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.card-head{padding:15px 16px;border-bottom:1px solid var(--line)}
+.card-head h3{font-size:16px;font-weight:900;letter-spacing:-.015em;margin:6px 0 0}
+.card-body{padding:16px}
+.blurb{font-size:12.5px;line-height:1.55;color:var(--cream-70);margin:0;padding:15px 16px 0}
+.gg-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-soft);margin-top:15px;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+.gg-stats div{background:var(--ink);padding:11px 8px;text-align:center}
+.gg-stats b{display:block;font-size:17px;font-weight:900;letter-spacing:-.03em;color:var(--orange)}
+.gg-stats span{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--cream-45)}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tab{flex:1;padding:11px 8px;background:none;border:0;border-bottom:2px solid transparent;color:var(--cream-45);
+  font:inherit;font-size:11.5px;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.tab:hover{color:var(--cream)}
+.tab[aria-selected="true"]{color:var(--cream);border-bottom-color:var(--orange)}
+.panel[hidden]{display:none}
+.champ{display:grid;grid-template-columns:44px 1fr;gap:13px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line-soft)}
+.champ:last-child{border-bottom:0;padding-bottom:0}
+.champ:first-child{padding-top:0}
+.year{font-size:18px;font-weight:900;letter-spacing:-.03em;color:var(--orange)}
+.champ b{display:block;font-size:14px;font-weight:700;line-height:1.2}
+.champ span{font-size:11px;color:var(--cream-45);font-weight:500}
+.pr{list-style:none;margin:0;padding:0}
+.pr li{display:grid;grid-template-columns:22px 1fr auto;gap:11px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px}
+.pr li:last-child{border-bottom:0;padding-bottom:0}
+.pr li:first-child{padding-top:0}
+.pr .n{font-size:12px;font-weight:800;color:var(--cream-28)}
+.pr li:nth-child(-n+3) .n{color:var(--orange)}
+.pr b{font-weight:700}
+.pr .mv{font-size:10px;font-weight:700}
+.up{color:#4ADE80}.dn{color:var(--pink)}.ev{color:var(--cream-28)}
+.card-foot{display:block;padding:12px 16px;font-size:12px;font-weight:600;color:var(--cream-45);border-top:1px solid var(--line)}
+.card-foot:hover{color:var(--cream)}
+.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
+.ig-tile{aspect-ratio:1;background:var(--ink-2);border:1px solid var(--line-soft);display:grid;place-items:center}
+.ig-tile:nth-child(1){background:linear-gradient(135deg,rgba(59,107,214,.3),var(--ink-2))}
+.ig-tile:nth-child(3){background:linear-gradient(135deg,rgba(255,46,99,.28),var(--ink-2))}
+.ig-tile:nth-child(5){background:linear-gradient(135deg,rgba(255,122,41,.28),var(--ink-2))}
+.ig-tile:nth-child(6){background:linear-gradient(135deg,rgba(34,211,238,.24),var(--ink-2))}
+.ig-tile b{font-size:8px;letter-spacing:.14em;color:var(--cream-28);font-weight:700}
+.ad{display:block;border-radius:3px;padding:24px 20px 20px;position:relative;overflow:hidden;
+  background:linear-gradient(150deg,#1B0F2E,#2A1338 55%,#3A1A2E);border:1px solid rgba(255,122,41,.30)}
+.ad::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,var(--orange),var(--pink))}
+.ad .adlabel{position:absolute;top:12px;right:14px;font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-28)}
+.ad h4{font-size:26px;font-weight:900;line-height:.98;letter-spacing:-.028em;margin:6px 0 10px}
+.ad h4 em{font-style:normal;display:block;color:var(--orange)}
+.ad p{font-size:12.5px;line-height:1.5;color:var(--cream-70);margin:0 0 16px;max-width:32ch}
+.ad .cta{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:9px 15px;background:var(--orange);color:#1B0F2E;border-radius:2px}
+.ad:hover .cta{background:var(--cream)}
+
+/* ── press ────────────────────────────────── */
+.press{border-top:1px solid var(--line);background:var(--ink-2)}
+.press-inner{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:44px;padding:40px 0}
+.press h3{font-size:20px;font-weight:900;letter-spacing:-.02em;margin:8px 0 10px}
+.press p{font-size:13px;line-height:1.6;color:var(--cream-70);margin:0;max-width:46ch}
+.stat{display:flex;flex-direction:column;gap:2px;margin-bottom:16px}
+.stat b{font-size:26px;font-weight:900;letter-spacing:-.03em}
+.stat span{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--cream-45)}
+.press a.mail{font-size:14px;font-weight:700;border-bottom:1px solid var(--coral);padding-bottom:2px}
+footer{border-top:1px solid var(--line-soft);padding:26px 0 40px;font-size:11.5px;color:var(--cream-28);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer .spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin-bottom:26px}
+
+@media (max-width:1080px){
+  .main{grid-template-columns:1fr;gap:44px}
+  .mq-list{grid-template-columns:1fr}
+  .mq-list li{border-left:0;border-top:1px solid var(--line-soft);padding:12px 0}
+  .mq-list li:first-child{border-top:0;padding-top:0}
+  .press-inner{grid-template-columns:1fr 1fr;gap:28px}
+}
+@media (max-width:720px){
+  .wrap{padding:0 18px}
+  nav{display:none}
+  .lead{grid-template-columns:1fr}
+  .stories a{grid-template-columns:52px 1fr;row-gap:6px}
+  .stamp{grid-column:2;justify-self:start}
+  .thumb{width:52px;height:52px}
+  .press-inner{grid-template-columns:1fr}
+  .mast-inner{height:62px}
+  .mq-line{flex-direction:column;gap:2px;align-items:flex-start}
+}
+@media (prefers-reduced-motion:reduce){.ticker-run{animation:none}.pulse{animation:none}.rail{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<!-- ═══ TICKER ═══ -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ticker-flag"><span class="pulse"></span>Live wire</div>
+    <div class="ticker-track">
+      <div class="ticker-run" id="run">
+        <span class="ticker-item"><i class="tdot" style="background:var(--dol)"></i><b>Dolphins</b> Tyreek Hill full participant in Monday practice, no injury designation expected for Week 1</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--can)"></i><b>Canes</b> Miami opens the week No. 12 in the AP poll after the road win in Atlanta</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--mia)"></i><b>Marlins</b> Eury Pérez strikes out nine over six innings, lowers ERA to 3.04</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--imcf)"></i><b>Inter Miami</b> Messi listed available for tonight's derby after missing the international window</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--cyan)"></i><b>High School</b> Columbus opens the season ranked No. 3 in the state after a 34-10 win over Central</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--pan)"></i><b>Panthers</b> Training camp roster released, first on-ice session set for Sept 18</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--heat)"></i><b>Heat</b> Miami finalizes two-way deal ahead of media day</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MASTHEAD ═══ -->
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <a class="logo" href="/">
+      <span class="mark"></span>
+      <span class="wordmark">Sport Spectator<span>Miami sports, covered</span></span>
+    </a>
+    <nav>
+      <a href="#" aria-current="page">Home</a>
+      <a href="#">Calendar</a>
+      <a href="#">Dolphins</a>
+      <a href="#">Hurricanes</a>
+      <a href="#">High School</a>
+      <a href="#">Inter Miami</a>
+      <a href="#">Heat</a>
+      <a href="#">Marlins</a>
+      <a href="#">Panthers</a>
+      <a href="#">Gol Gala</a>
+    </nav>
+    <div class="mast-right">
+      <span class="clock" id="clock">Mon Aug 31 · 4:12 PM</span>
+      <a class="btn-press" href="#press">Press &amp; media</a>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ ROW 1 · GAMES OF THE WEEK ═══ -->
+<section class="marquee">
+  <div class="wrap">
+    <div class="mq-head">
+      <h1>Games of the week</h1>
+      <span class="mq-note">Ranked by our desk · Aug 31 – Sep 6</span>
+    </div>
+    <ol class="mq-list">
+      <li><a href="#">
+        <span class="rank">1</span>
+        <div>
+          <div class="mq-line"><span class="comp">La Liga · El Clásico</span><span class="mq-when">Sun 3:15 PM · ESPN+</span></div>
+          <h2>Real Madrid vs Barcelona</h2>
+          <p class="mq-why">The earliest Clásico in a decade, and both sides arrive unbeaten under new managers.</p>
+        </div>
+      </a></li>
+      <li><a href="#">
+        <span class="rank">2</span>
+        <div>
+          <div class="mq-line"><span class="comp">NCAA Football</span><span class="mq-when">Sat 7:30 PM · ABC</span></div>
+          <h2>Notre Dame at Miami</h2>
+          <p class="mq-why">Primetime at Hard Rock, a top-15 matchup, and the Canes' first real measuring stick.</p>
+        </div>
+      </a></li>
+      <li><a href="#">
+        <span class="rank">3</span>
+        <div>
+          <div class="mq-line"><span class="comp">US Open · Quarterfinal</span><span class="mq-when">Wed 7:00 PM · ESPN</span></div>
+          <h2>Alcaraz vs Sinner</h2>
+          <p class="mq-why">Their sixth meeting of the year, and the first one arriving before a final.</p>
+        </div>
+      </a></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ═══ ROW 2 · MIAMI SLATE ═══ -->
+<section class="slate">
+  <div class="wrap">
+    <div class="slate-head">
+      <h2>Miami this week</h2>
+      <span class="date">Monday, August 31 · next five days</span>
+      <span class="sp"></span>
+      <a class="morelink" href="#">Full calendar</a>
+      <div class="rail-nav">
+        <button class="rail-btn" id="prev" aria-label="Scroll games left">‹</button>
+        <button class="rail-btn" id="next" aria-label="Scroll games right">›</button>
+      </div>
+    </div>
+
+    <div class="rail" id="rail">
+
+      <article class="game" style="--accent:var(--mia)">
+        <div class="g-top"><span class="league">MLB · FDSF</span><span class="live-chip"><i class="pulse"></i>Bot 6</span></div>
+        <div class="t away"><span class="abbr" style="color:var(--pan)">ATL</span><span class="t-name">Braves</span><span class="val score dim">2</span></div>
+        <div class="t"><span class="abbr" style="color:var(--mia)">MIA</span><span class="t-name">Marlins</span><span class="val score">3</span></div>
+      </article>
+
+      <article class="game" style="--accent:var(--imcf)">
+        <div class="g-top"><span class="league">MLS · Apple TV</span><span class="when">Tonight 7:30</span></div>
+        <div class="t away"><span class="abbr" style="color:var(--pan)">ORL</span><span class="t-name">Orlando City</span><span class="val">12-8-6</span></div>
+        <div class="t"><span class="abbr" style="color:var(--imcf)">MIA</span><span class="t-name">Inter Miami</span><span class="val">17-6-4</span></div>
+      </article>
+
+      <article class="game" style="--accent:var(--mia)">
+        <div class="g-top"><span class="league">MLB · FDSF</span><span class="when">Tue 6:45</span></div>
+        <div class="t away"><span class="abbr" style="color:var(--mia)">MIA</span><span class="t-name">Marlins</span><span class="val">71-66</span></div>
+        <div class="t"><span class="abbr" style="color:var(--blue)">WSH</span><span class="t-name">Nationals</span><span class="val">62-75</span></div>
+      </article>
+
+      <article class="game" style="--accent:var(--mia)">
+        <div class="g-top"><span class="league">MLB · FDSF</span><span class="when">Wed 6:45</span></div>
+        <div class="t away"><span class="abbr" style="color:var(--mia)">MIA</span><span class="t-name">Marlins</span><span class="val">71-66</span></div>
+        <div class="t"><span class="abbr" style="color:var(--blue)">WSH</span><span class="t-name">Nationals</span><span class="val">62-75</span></div>
+      </article>
+
+      <article class="game" style="--accent:var(--can)">
+        <div class="g-top"><span class="league"><span class="star">★</span>NCAA · ABC</span><span class="when">Sat 7:30</span></div>
+        <div class="t away"><span class="abbr" style="color:var(--blue)">ND</span><span class="t-name">Notre Dame</span><span class="val">1-0</span></div>
+        <div class="t"><span class="abbr" style="color:var(--can)">MIA</span><span class="t-name">Hurricanes</span><span class="val">1-0</span></div>
+      </article>
+
+      <article class="game" style="--accent:var(--imcf)">
+        <div class="g-top"><span class="league">MLS · Season Pass</span><span class="when">Sat 5:00</span></div>
+        <div class="t away"><span class="abbr" style="color:var(--imcf)">MIA</span><span class="t-name">Inter Miami</span><span class="val">17-6-4</span></div>
+        <div class="t"><span class="abbr" style="color:var(--cyan)">CLT</span><span class="t-name">Charlotte FC</span><span class="val">13-11-5</span></div>
+      </article>
+
+      <article class="game" style="--accent:var(--dol)">
+        <div class="g-top"><span class="league">NFL Wk 1 · CBS</span><span class="when">Sun 9/13 1:00</span></div>
+        <div class="t away"><span class="abbr" style="color:var(--dol)">MIA</span><span class="t-name">Dolphins</span><span class="val">0-0</span></div>
+        <div class="t"><span class="abbr" style="color:var(--blue)">IND</span><span class="t-name">Colts</span><span class="val">0-0</span></div>
+      </article>
+
+      <article class="game off" style="--accent:var(--pan)">
+        <div class="g-top"><span class="league">NHL</span><span class="when">Off-season</span></div>
+        <div class="cd"><b>38</b><span>days to<br>puck drop</span></div>
+        <div class="t"><span class="abbr" style="color:var(--pan)">FLA</span><span class="t-name">Panthers</span><span class="val">Oct 8</span></div>
+      </article>
+
+      <article class="game off" style="--accent:var(--heat)">
+        <div class="g-top"><span class="league">NBA</span><span class="when">Off-season</span></div>
+        <div class="cd"><b>51</b><span>days to<br>tip-off</span></div>
+        <div class="t"><span class="abbr" style="color:var(--heat)">MIA</span><span class="t-name">Heat</span><span class="val">Oct 21</span></div>
+      </article>
+
+    </div>
+
+    <div class="filters">
+      <button class="chip" data-on="true">All teams</button>
+      <button class="chip">Dolphins</button>
+      <button class="chip">Hurricanes</button>
+      <button class="chip">Inter Miami</button>
+      <button class="chip">Marlins</button>
+      <button class="chip">Heat</button>
+      <button class="chip">Panthers</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ MAIN ═══ -->
+<div class="wrap main">
+
+  <div>
+    <div class="sec-head">
+      <h2 class="sec-title">Latest</h2>
+      <a class="sec-link" href="#">All coverage</a>
+    </div>
+
+    <article class="lead">
+      <div class="photo"><span class="corner c1"></span><span class="corner c2"></span></div>
+      <div>
+        <span class="tag" style="color:var(--can)"><i></i>Hurricanes</span>
+        <h3>Miami's defensive front looked like the best unit in the ACC. Notre Dame is the real test.</h3>
+        <p>Four sacks and eleven pressures in the opener came almost entirely from four-man rushes. Whether that holds against a veteran offensive line will decide how seriously the Canes get taken in November.</p>
+        <span class="byline">John Lasak · 2 hours ago · 6 min read</span>
+      </div>
+    </article>
+
+    <ul class="stories">
+      <li><a href="#"><span class="thumb"><b>IMG</b></span><span><span class="tag" style="color:var(--dol)"><i></i>Dolphins</span><h4>Week 1 in Indianapolis is a schedule gift the Dolphins have wasted before</h4></span><span class="stamp">5h ago</span></a></li>
+      <li><a href="#"><span class="thumb"><b>IMG</b></span><span><span class="tag" style="color:var(--imcf)"><i></i>Inter Miami</span><h4>The derby matters more than the table right now, and Mascherano knows it</h4></span><span class="stamp">9h ago</span></a></li>
+      <li><a href="#"><span class="thumb"><b>IMG</b></span><span><span class="tag" style="color:var(--mia)"><i></i>Marlins</span><h4>Eury Pérez has quietly become the most valuable arm in the National League East</h4></span><span class="stamp">Yesterday</span></a></li>
+      <li><a href="#"><span class="thumb"><b>IMG</b></span><span><span class="tag" style="color:var(--cyan)"><i></i>High School</span><h4>Columbus and Chaminade meet in Week 2 with a district title already on the line</h4></span><span class="stamp">Yesterday</span></a></li>
+      <li><a href="#"><span class="thumb"><b>IMG</b></span><span><span class="tag" style="color:var(--orange)"><i></i>Gol Gala</span><h4>Inside the third year of Miami's biggest 7v7 tournament</h4></span><span class="stamp">Aug 28</span></a></li>
+      <li><a href="#"><span class="thumb"><b>IMG</b></span><span><span class="tag" style="color:var(--pan)"><i></i>Panthers</span><h4>What a third straight Cup run would actually require from this roster</h4></span><span class="stamp">Aug 27</span></a></li>
+      <li><a href="#"><span class="thumb"><b>IMG</b></span><span><span class="tag" style="color:var(--heat)"><i></i>Heat</span><h4>Miami's summer was quiet. That was probably the point.</h4></span><span class="stamp">Aug 25</span></a></li>
+    </ul>
+  </div>
+
+  <aside>
+
+    <section class="card">
+      <div class="card-head">
+        <span class="eyebrow">Presented by Sport Spectator</span>
+        <h3>Gol Gala</h3>
+      </div>
+      <p class="blurb">Miami's most elite 7v7 soccer tournament. Natural grass at OB Johnson Park, licensed referees, live-streamed matches, professional photography, and a $10,000 prize pool. Three years of curating competition and culture in South Florida.</p>
+      <div class="gg-stats">
+        <div><b>$10K</b><span>Prize pool</span></div>
+        <div><b>3</b><span>Years running</span></div>
+        <div><b>3.6M</b><span>Lifetime views</span></div>
+      </div>
+
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" aria-selected="true" aria-controls="p-champs" id="t-champs">Champions</button>
+        <button class="tab" role="tab" aria-selected="false" aria-controls="p-power" id="t-power">Power rankings</button>
+      </div>
+
+      <div class="card-body panel" id="p-champs" role="tabpanel" aria-labelledby="t-champs">
+        <div class="champ"><span class="year">2026</span><span><b>Team TBC</b><span>World Cup Edition</span></span></div>
+        <div class="champ"><span class="year">2025</span><span><b>Auld Dubliner 7's</b><span>Runner-up: Rovers FC</span></span></div>
+        <div class="champ"><span class="year">2024</span><span><b>Athletic Core Fitness</b><span>Runner-up: Por El Deporte</span></span></div>
+      </div>
+
+      <div class="card-body panel" id="p-power" role="tabpanel" aria-labelledby="t-power" hidden>
+        <ol class="pr">
+          <li><span class="n">1</span><b>Auld Dubliner 7's</b><span class="mv ev">—</span></li>
+          <li><span class="n">2</span><b>La Oficina</b><span class="mv up">▲ 2</span></li>
+          <li><span class="n">3</span><b>Dade County FC</b><span class="mv up">▲ 1</span></li>
+          <li><span class="n">4</span><b>Por El Deporte</b><span class="mv dn">▼ 2</span></li>
+          <li><span class="n">5</span><b>SV Brickell</b><span class="mv ev">—</span></li>
+          <li><span class="n">6</span><b>La Selecta FC</b><span class="mv up">▲ 1</span></li>
+          <li><span class="n">7</span><b>Sport Spectator FC</b><span class="mv dn">▼ 1</span></li>
+          <li><span class="n">8</span><b>Los Magos</b><span class="mv ev">—</span></li>
+        </ol>
+      </div>
+
+      <a class="card-foot" href="https://golgala.com">Scouting reports and full rankings at golgala.com</a>
+    </section>
+
+    <section class="card">
+      <div class="card-head">
+        <span class="eyebrow">Instagram</span>
+        <h3>@thesportspectator</h3>
+      </div>
+      <div class="ig-grid">
+        <span class="ig-tile"><b>POST</b></span><span class="ig-tile"><b>POST</b></span><span class="ig-tile"><b>POST</b></span>
+        <span class="ig-tile"><b>POST</b></span><span class="ig-tile"><b>POST</b></span><span class="ig-tile"><b>POST</b></span>
+      </div>
+      <a class="card-foot" href="https://instagram.com/thesportspectator">Follow on Instagram</a>
+    </section>
+
+    <a class="ad" href="https://miahappyhrs.com">
+      <span class="adlabel">Partner</span>
+      <span class="eyebrow" style="color:var(--pink)">Before the game</span>
+      <h4>Every happy hour<em>in Miami.</em></h4>
+      <p>Deals near Hard Rock, Chase Stadium and loanDepot Park — searchable by neighborhood and time.</p>
+      <span class="cta">miahappyhrs.com</span>
+    </a>
+
+  </aside>
+</div>
+
+<!-- ═══ PRESS ═══ -->
+<section class="press" id="press">
+  <div class="wrap press-inner">
+    <div>
+      <span class="eyebrow">About</span>
+      <h3>Independent Miami sports coverage since 2023.</h3>
+      <p>Sport Spectator covers all six Miami professional and collegiate franchises, plus South Florida high school football and soccer, with original reporting, photography and video. Published by Sport Spectator Gol Gala LLC, which also produces Gol Gala, South Florida's largest 7v7 tournament.</p>
+    </div>
+    <div>
+      <span class="eyebrow">Reach</span>
+      <div class="stat" style="margin-top:14px"><b>—</b><span>Instagram followers</span></div>
+      <div class="stat"><b>—</b><span>Monthly readers</span></div>
+      <div class="stat"><b>3</b><span>Years of event production</span></div>
+    </div>
+    <div>
+      <span class="eyebrow">Credentials</span>
+      <h3 style="font-size:15px">Media requests</h3>
+      <p style="margin-bottom:14px">For credential applications, photo access and interview requests.</p>
+      <a class="mail" href="mailto:john@thesportspectator.com">john@thesportspectator.com</a>
+    </div>
+  </div>
+  <div class="wrap">
+    <footer>
+      <span class="spec"></span>
+      <span>© 2026 Sport Spectator Gol Gala LLC · Miami, Florida</span>
+      <span>Original reporting, photography and video.</span>
+    </footer>
+  </div>
+</section>
+
+<script>
+/* ── Config ──────────────────────────────────────────────
+   Point this at your Worker. Once the Worker is on a route
+   like thesportspectator.com/api/*, set API = '' instead.  */
+const API = 'https://sport-spectator-api.YOUR-SUBDOMAIN.workers.dev';
+
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const get = async path => {
+  const r = await fetch(API + path);
+  if (!r.ok) throw new Error(path);
+  return r.json();
+};
+
+/* ── Live wire ─────────────────────────────────────────── */
+const run = document.getElementById('run');
+
+function renderWire(items){
+  if(!items.length) return;
+  run.innerHTML = items.map(i => `
+    <a class="ticker-item" href="${esc(i.link)}" target="_blank" rel="noopener">
+      <i class="tdot" style="background:var(--${esc(i.accent)})"></i>
+      <b>${esc(i.tag)}</b>${esc(i.headline)}
+      ${i.source ? `<span style="color:var(--cream-28)">${esc(i.source)}</span>` : ''}
+    </a>`).join('');
+  run.innerHTML += run.innerHTML;   // duplicate for the seamless loop
+}
+renderWire([]); run.innerHTML += run.innerHTML;
+get('/api/wire').then(d => renderWire(d.items || [])).catch(()=>{});
+
+/* ── Games of the week ─────────────────────────────────── */
+function renderGow(games){
+  if(games.length !== 3) return;
+  document.querySelector('.mq-list').innerHTML = games.map((g,i) => `
+    <li><a href="#">
+      <span class="rank">${i+1}</span>
+      <div>
+        <div class="mq-line">
+          <span class="comp">${esc(g.comp)}</span>
+          <span class="mq-when">${esc(g.when)}</span>
+        </div>
+        <h2>${esc(g.matchup)}</h2>
+        <p class="mq-why">${esc(g.why)}</p>
+      </div>
+    </a></li>`).join('');
+}
+get('/api/games-of-week').then(d => renderGow(d.games || [])).catch(()=>{});
+
+/* ── Miami slate ───────────────────────────────────────── */
+const fmtWhen = iso => {
+  const d = new Date(iso), now = new Date();
+  const time = d.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'}).replace(' ','').toLowerCase();
+  const sameDay = d.toDateString() === now.toDateString();
+  if (sameDay) return `Tonight ${time}`;
+  const within = (d - now) / 864e5 < 6;
+  const day = d.toLocaleString('en-US',{weekday:'short',timeZone:'America/New_York'});
+  return within ? `${day} ${time}` : `${day} ${d.getMonth()+1}/${d.getDate()} ${time}`;
+};
+
+const teamRow = (t, live) => `
+  <div class="t${t.isMine ? '' : ' away'}">
+    <span class="abbr" style="color:var(--${t.isMine ? 'accent-team' : 'cream-45'})">${esc(t.abbr)}</span>
+    <span class="t-name">${esc(t.name)}</span>
+    <span class="val${live ? ' score' : ''}${live && !t.isMine ? ' dim' : ''}">${esc(live ? t.score : t.record)}</span>
+  </div>`;
+
+function renderSlate(games){
+  if(!games.length) return;
+  document.getElementById('rail').innerHTML = games.map(g => {
+    const live = g.state === 'in' || g.state === 'post';
+    const right = g.state === 'in'
+      ? `<span class="live-chip"><i class="pulse"></i>${esc(g.statusDetail)}</span>`
+      : g.state === 'post'
+        ? `<span class="when" style="color:var(--cream-45)">Final</span>`
+        : `<span class="when">${esc(fmtWhen(g.start))}</span>`;
+    return `
+      <article class="game" style="--accent:var(--${esc(g.accent)});--accent-team:var(--${esc(g.accent)})">
+        <div class="g-top">
+          <span class="league">${esc(g.leagueLabel)}${g.network ? ' · ' + esc(g.network) : ''}</span>
+          ${right}
+        </div>
+        ${teamRow(g.away, live)}
+        ${teamRow(g.home, live)}
+      </article>`;
+  }).join('');
+}
+const loadSlate = () => get('/api/slate').then(d => renderSlate(d.games || [])).catch(()=>{});
+loadSlate();
+setInterval(loadSlate, 60000);   // live scores tick every minute
+
+/* ── Instagram ─────────────────────────────────────────── */
+get('/api/instagram').then(d => {
+  const items = (d.items || []).slice(0,6);
+  if(!items.length) return;
+  document.querySelector('.ig-grid').innerHTML = items.map(m => `
+    <a class="ig-tile" href="${esc(m.permalink)}" target="_blank" rel="noopener"
+       style="background-image:url('${esc(m.image)}');background-size:cover;background-position:center"
+       aria-label="${esc(m.caption)}"></a>`).join('');
+}).catch(()=>{});
+
+/* ── UI ────────────────────────────────────────────────── */
+const rail = document.getElementById('rail');
+document.getElementById('prev').onclick = () => rail.scrollBy({left:-500});
+document.getElementById('next').onclick = () => rail.scrollBy({left: 500});
+
+document.querySelectorAll('.chip').forEach(c => c.onclick = () => {
+  document.querySelectorAll('.chip').forEach(x => x.dataset.on = 'false');
+  c.dataset.on = 'true';
+});
+
+document.querySelectorAll('.tab').forEach(tab => tab.onclick = () => {
+  document.querySelectorAll('.tab').forEach(t => {
+    t.setAttribute('aria-selected', String(t === tab));
+    document.getElementById(t.getAttribute('aria-controls')).hidden = (t !== tab);
+  });
+});
+
+function tick(){
+  const d = new Date();
+  const s = d.toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZone:'America/New_York'});
+  document.getElementById('clock').textContent = s.replace(',','').replace(' at ',' · ');
+}
+tick(); setInterval(tick, 30000);
+</script>
+</body>
+</html>
