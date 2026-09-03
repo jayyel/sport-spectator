@@ -11,7 +11,7 @@ crons = ["* * * * *"]
 # then paste the returned id below.
 [[kv_namespaces]]
 binding = "SS"
-id = "sport-spectator kv namespace"
+id = "84bb007f0bd0445cb47ee23cf03ea1a1"
 
 # Secrets — set these with `npx wrangler secret put NAME`, never commit them:
 #   IG_TOKEN           long-lived Instagram token (seeds KV on first run)
