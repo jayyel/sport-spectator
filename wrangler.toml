@@ -17,7 +17,7 @@ crons = ["* * * * *"]
 # npx wrangler kv namespace create SS  →  paste the id below
 [[kv_namespaces]]
 binding = "SS"
-id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
+id = "84bb007f0bd0445cb47ee23cf03ea1a1"
 
 # Secrets — set in the dashboard under Settings > Variables and Secrets,
 # or with `npx wrangler secret put NAME`. Never commit these.
