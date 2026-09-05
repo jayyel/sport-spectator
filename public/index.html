@@ -533,9 +533,7 @@ footer .spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin
 </section>
 
 <script>
-/* ── Config ──────────────────────────────────────────────
-   Point this at your Worker. Once the Worker is on a route
-   like thesportspectator.com/api/*, set API = '' instead.  */
+/* Same-origin: the Worker serving this page also serves /api/* */
 const API = '';
 
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
