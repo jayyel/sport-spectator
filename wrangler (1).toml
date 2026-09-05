@@ -1,0 +1,26 @@
+# Lives at the REPO ROOT — not in worker/
+# One Worker serves both the site and the API.
+# Static assets are matched first; anything with no matching file
+# (i.e. /api/*) falls through to the Worker script.
+
+name = "sport-spectator"
+main = "worker/src/index.js"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[triggers]
+crons = ["* * * * *"]
+
+# npx wrangler kv namespace create SS  →  paste the id below
+[[kv_namespaces]]
+binding = "SS"
+id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
+
+# Secrets — set in the dashboard under Settings > Variables and Secrets,
+# or with `npx wrangler secret put NAME`. Never commit these.
+#   ADMIN_KEY          random string protecting /api/refresh and /approve
+#   IG_TOKEN           long-lived Instagram token
+#   ANTHROPIC_API_KEY  optional, for the weekly games-of-the-week proposal
