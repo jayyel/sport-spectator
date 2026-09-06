@@ -22,6 +22,7 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
+html,body{max-width:100%;overflow-x:hidden}
 body{margin:0;background:var(--ink);color:var(--cream);
   font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
   font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
@@ -49,6 +50,8 @@ a{color:inherit;text-decoration:none}
 
 /* ── masthead ─────────────────────────────── */
 .masthead{border-bottom:1px solid var(--line);background:rgba(11,15,26,.93);backdrop-filter:blur(10px);position:sticky;top:0;z-index:40}
+/* backdrop-filter makes .masthead a containing block, so the mobile
+   panel is positioned against it rather than the viewport. */
 .mast-inner{display:flex;align-items:center;gap:34px;height:70px}
 .logo{display:flex;align-items:center;gap:12px;flex:0 0 auto}
 .mark{width:32px;height:32px;border-radius:50%;flex:0 0 auto;position:relative;
@@ -56,13 +59,32 @@ a{color:inherit;text-decoration:none}
 .mark::after{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--ink)}
 .wordmark{font-size:18px;font-weight:800;font-stretch:105%;letter-spacing:.13em;text-transform:uppercase;line-height:1}
 .wordmark span{display:block;font-size:8.5px;font-weight:600;letter-spacing:.26em;color:var(--cream-45);margin-top:4px}
-nav{display:flex;gap:17px;font-size:12.5px;font-weight:600;color:var(--cream-70);flex:1;white-space:nowrap}
-nav a{padding:4px 0;border-bottom:2px solid transparent}
-nav a:hover,nav a[aria-current]{color:var(--cream);border-bottom-color:var(--coral)}
+nav{display:flex;align-items:center;gap:19px;font-size:12.5px;font-weight:600;color:var(--cream-70);flex:1;white-space:nowrap}
+nav>a,.has-sub>a{padding:4px 0;border-bottom:2px solid transparent;display:inline-block}
+nav>a:hover,nav>a[aria-current],.has-sub>a:hover{color:var(--cream);border-bottom-color:var(--coral)}
+.has-sub{position:relative}
+.caret{font-size:8px;margin-left:5px;vertical-align:1px;color:var(--cream-45)}
+.has-sub:hover .caret{color:var(--coral)}
+.sub{position:absolute;top:100%;left:-14px;margin-top:9px;min-width:150px;background:var(--ink-2);
+  border:1px solid var(--line);border-radius:3px;padding:5px 0;opacity:0;visibility:hidden;
+  transform:translateY(-4px);transition:opacity .13s,transform .13s;z-index:60;
+  box-shadow:0 14px 34px rgba(0,0,0,.5)}
+.sub::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:var(--spectrum)}
+.has-sub:hover .sub,.has-sub:focus-within .sub{opacity:1;visibility:visible;transform:translateY(0)}
+.sub a{display:block;padding:9px 16px;font-size:12.5px;font-weight:600;color:var(--cream-70)}
+.sub a:hover{background:var(--ink-3);color:var(--cream)}
 .mast-right{display:flex;align-items:center;gap:14px;flex:0 0 auto}
 .clock{font-size:12px;font-weight:600;color:var(--cream-45)}
 .btn-press{font-size:12px;font-weight:700;letter-spacing:.06em;padding:8px 15px;border-radius:2px;border:1px solid var(--line)}
 .btn-press:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.burger{display:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  width:40px;height:40px;padding:0;margin-right:-6px;background:none;border:0;cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+.burger span{display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;
+  transition:transform .2s ease,opacity .15s ease}
+.burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
 
 /* ═══ ROW 1 — GAMES OF THE WEEK ═══ */
 .marquee{border-bottom:1px solid var(--line);padding:16px 0 18px;background:
@@ -126,13 +148,29 @@ nav a:hover,nav a[aria-current]{color:var(--cream);border-bottom-color:var(--cor
 .cd{display:flex;align-items:baseline;gap:8px;height:42px;padding-top:4px}
 .cd b{font-size:26px;font-weight:900;letter-spacing:-.03em;line-height:1}
 .cd span{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cream-45)}
-.filters{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
-.chip{font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:5px 10px;border-radius:20px;border:1px solid var(--line);color:var(--cream-45);background:none;cursor:pointer}
-.chip:hover{color:var(--cream);border-color:var(--cream-45)}
-.chip[data-on="true"]{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+/* Miami Happy Hours banner — brand blue #58A5F7, brand pink #E8407F */
+:root{--mhh-blue:#58A5F7;--mhh-pink:#E8407F}
+.mhh{display:flex;align-items:center;gap:16px;margin-top:12px;padding:13px 18px;border-radius:3px;
+  position:relative;overflow:hidden;border:1px solid rgba(88,165,247,.30);
+  background:linear-gradient(100deg,rgba(88,165,247,.16),rgba(88,165,247,.05) 46%,rgba(232,64,127,.09))}
+.mhh::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,var(--mhh-blue),var(--mhh-pink))}
+.mhh:hover{border-color:rgba(88,165,247,.55)}
+.mhh-pin{width:26px;height:26px;flex:0 0 auto;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);
+  background:var(--mhh-pink);position:relative}
+.mhh-pin::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--ink)}
+.mhh-copy{display:flex;flex-direction:column;gap:2px;line-height:1.15}
+.mhh-copy b{font-size:17px;font-weight:900;letter-spacing:-.02em;color:var(--mhh-blue)}
+.mhh-copy span{font-size:11.5px;font-weight:600;color:var(--cream-45)}
+.mhh-sp{flex:1}
+.mhh-note{font-size:12px;font-weight:500;color:var(--cream-45);white-space:nowrap}
+.mhh-cta{flex:0 0 auto;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  padding:9px 16px;border-radius:20px;background:var(--mhh-pink);color:#fff;white-space:nowrap}
+.mhh:hover .mhh-cta{background:var(--cream);color:#0B0F1A}
+@media (max-width:900px){.mhh-note{display:none}}
+@media (max-width:560px){.mhh{flex-wrap:wrap;gap:12px}.mhh-sp{display:none}}
 
 /* ── body grid ────────────────────────────── */
-.main{display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:52px;padding:40px 0 60px}
+.main{display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:52px;padding-block:40px 60px}
 .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:2px solid var(--cream);margin-bottom:22px}
 .sec-title{font-size:24px;font-weight:900;letter-spacing:-.015em;margin:0}
 .sec-link{font-size:12px;font-weight:600;color:var(--cream-45)}
@@ -188,30 +226,43 @@ aside{display:flex;flex-direction:column;gap:34px}
 .pr .n{font-size:12px;font-weight:800;color:var(--cream-28)}
 .pr li:nth-child(-n+3) .n{color:var(--orange)}
 .pr b{font-weight:700}
-.pr .mv{font-size:10px;font-weight:700}
-.up{color:#4ADE80}.dn{color:var(--pink)}.ev{color:var(--cream-28)}
+.pr .yr{font-size:11px;font-weight:700;color:var(--cream-45);letter-spacing:.02em;font-variant-numeric:tabular-nums}
 .card-foot{display:block;padding:12px 16px;font-size:12px;font-weight:600;color:var(--cream-45);border-top:1px solid var(--line)}
 .card-foot:hover{color:var(--cream)}
-.ig-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:3px}
-.ig-tile{aspect-ratio:1;background:var(--ink-2);border:1px solid var(--line-soft);display:grid;place-items:center}
-.ig-tile:nth-child(1){background:linear-gradient(135deg,rgba(59,107,214,.3),var(--ink-2))}
-.ig-tile:nth-child(3){background:linear-gradient(135deg,rgba(255,46,99,.28),var(--ink-2))}
-.ig-tile:nth-child(5){background:linear-gradient(135deg,rgba(255,122,41,.28),var(--ink-2))}
-.ig-tile:nth-child(6){background:linear-gradient(135deg,rgba(34,211,238,.24),var(--ink-2))}
-.ig-tile b{font-size:8px;letter-spacing:.14em;color:var(--cream-28);font-weight:700}
+.news-blurb{font-size:12.5px;line-height:1.55;color:var(--cream-70);margin:0 0 14px}
+.news-form{display:flex;gap:7px}
+.news-form input{flex:1;min-width:0;background:var(--ink);border:1px solid var(--line);border-radius:2px;
+  padding:10px 11px;color:var(--cream);font:inherit;font-size:13px}
+.news-form input::placeholder{color:var(--cream-28)}
+.news-form input:focus{outline:none;border-color:var(--cyan)}
+.news-form button{flex:0 0 auto;background:var(--orange);color:#0B0F1A;border:0;border-radius:2px;
+  padding:10px 15px;font:inherit;font-size:11.5px;font-weight:800;letter-spacing:.06em;cursor:pointer}
+.news-form button:hover{background:var(--cream)}
+.news-form button:disabled{opacity:.5;cursor:default}
+.news-msg{font-size:11.5px;font-weight:600;margin:9px 0 0;min-height:1px}
+.news-msg.ok{color:#4ADE80}.news-msg.err{color:var(--pink)}
+.news-fine{font-size:10.5px;color:var(--cream-28);margin:10px 0 0}
+/* Pilates & Lattes Club — brand lavender/pink held back to a wash */
 .ad{display:block;border-radius:3px;padding:24px 20px 20px;position:relative;overflow:hidden;
-  background:linear-gradient(150deg,#1B0F2E,#2A1338 55%,#3A1A2E);border:1px solid rgba(255,122,41,.30)}
-.ad::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:linear-gradient(90deg,var(--orange),var(--pink))}
+  background:linear-gradient(158deg,rgba(217,199,232,.13),rgba(231,202,223,.07) 52%,rgba(244,208,216,.10));
+  border:1px solid rgba(217,199,232,.20)}
+.ad:hover{border-color:rgba(217,199,232,.38)}
+.ad::before{content:"";position:absolute;inset:0 0 auto;height:3px;
+  background:linear-gradient(90deg,#C4ABDD,#EFC2D2)}
 .ad .adlabel{position:absolute;top:12px;right:14px;font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-28)}
-.ad h4{font-size:26px;font-weight:900;line-height:.98;letter-spacing:-.028em;margin:6px 0 10px}
-.ad h4 em{font-style:normal;display:block;color:var(--orange)}
-.ad p{font-size:12.5px;line-height:1.5;color:var(--cream-70);margin:0 0 16px;max-width:32ch}
-.ad .cta{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:9px 15px;background:var(--orange);color:#1B0F2E;border-radius:2px}
-.ad:hover .cta{background:var(--cream)}
+.ad-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:#C9AEDC}
+.ad h4{font-size:30px;font-weight:400;font-style:italic;line-height:.98;letter-spacing:-.01em;margin:8px 0 11px;
+  font-family:Georgia,'Times New Roman',serif;color:#E6D6F0}
+.ad h4 em{font-style:italic;display:block;color:#F0C3D2}
+.ad p{font-size:12.5px;line-height:1.5;color:var(--cream-70);margin:0 0 16px}
+.ad .cta{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:9px 15px;background:rgba(240,195,210,.16);border:1px solid rgba(240,195,210,.34);
+  color:#F0C3D2;border-radius:2px}
+.ad:hover .cta{background:#F0C3D2;color:#1F5A38;border-color:#F0C3D2}
 
 /* ── press ────────────────────────────────── */
 .press{border-top:1px solid var(--line);background:var(--ink-2)}
-.press-inner{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:44px;padding:40px 0}
+.press-inner{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:44px;padding-block:40px}
 .press h3{font-size:20px;font-weight:900;letter-spacing:-.02em;margin:8px 0 10px}
 .press p{font-size:13px;line-height:1.6;color:var(--cream-70);margin:0;max-width:46ch}
 .stat{display:flex;flex-direction:column;gap:2px;margin-bottom:16px}
@@ -228,17 +279,76 @@ footer .spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin
   .mq-list li:first-child{border-top:0;padding-top:0}
   .press-inner{grid-template-columns:1fr 1fr;gap:28px}
 }
+
+/* ── Mobile navigation ─────────────────────────────────── */
+@media (max-width:900px){
+  .mast-inner{height:62px;gap:14px}
+  .burger{display:flex}
+  .clock,.btn-press{display:none}
+  .mast-right{margin-left:auto}
+
+  nav{
+    position:absolute;top:100%;left:0;right:0;z-index:55;
+    max-height:calc(100vh - 62px);max-height:calc(100dvh - 62px);
+    display:none;flex-direction:column;align-items:stretch;gap:0;
+    background:var(--ink);border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:0 0 8px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    box-shadow:0 20px 48px rgba(0,0,0,.6);
+  }
+  nav[data-open="true"]{display:flex}
+  nav::before{content:"";display:block;height:2px;background:var(--spectrum);flex:0 0 auto}
+  nav>a,.has-sub>a{
+    display:block;padding:15px 20px;font-size:16px;font-weight:700;
+    border-bottom:1px solid var(--line-soft);color:var(--cream)
+  }
+  nav>a:hover,.has-sub>a:hover{border-bottom-color:var(--line-soft)}
+  .caret{display:none}
+  /* submenus sit open and indented instead of hovering */
+  .sub{
+    position:static;opacity:1;visibility:visible;transform:none;margin:0;
+    background:rgba(0,0,0,.28);border:0;border-radius:0;box-shadow:none;padding:0;min-width:0
+  }
+  .sub::before{display:none}
+  .sub a{padding:13px 20px 13px 38px;font-size:14.5px;border-bottom:1px solid var(--line-soft);color:var(--cream-70)}
+}
+
 @media (max-width:720px){
   .wrap{padding:0 18px}
-  nav{display:none}
+  .ticker-flag{padding:0 20px 0 18px;font-size:10px}
+  .wordmark{font-size:16px;letter-spacing:.10em}
+  .wordmark span{font-size:8px;letter-spacing:.20em}
+
+  .mq-head{flex-wrap:wrap;gap:4px}
+  .mq-note{font-size:11px}
+  .mq-list a{grid-template-columns:32px 1fr;gap:11px}
+  .rank{font-size:32px}
+  .mq-list h2{font-size:17px}
+
+  /* stack the slate header, drop the arrows, let cards run to the edge */
+  .slate-head{flex-wrap:wrap;gap:4px 12px}
+  .slate-head h2{flex:0 0 100%}
+  .slate-head .sp{display:none}
+  .rail-nav{display:none}
+  .rail{margin:0 -18px;padding:0 18px 8px;scroll-padding-left:18px}
+  .game{flex-basis:216px}
+
   .lead{grid-template-columns:1fr}
   .stories a{grid-template-columns:52px 1fr;row-gap:6px}
   .stamp{grid-column:2;justify-self:start}
   .thumb{width:52px;height:52px}
-  .press-inner{grid-template-columns:1fr}
-  .mast-inner{height:62px}
-  .mq-line{flex-direction:column;gap:2px;align-items:flex-start}
+  .main{padding-block:32px 48px;gap:36px}
+  .press-inner{grid-template-columns:1fr;gap:26px;padding-block:32px}
+  footer{flex-direction:column;gap:8px}
 }
+
+@media (max-width:560px){
+  .mhh{flex-wrap:wrap;gap:12px;padding:14px 16px}
+  .mhh-sp,.mhh-note{display:none}
+  .mhh-cta{width:100%;text-align:center}
+  .sec-title{font-size:21px}
+}
+
 @media (prefers-reduced-motion:reduce){.ticker-run{animation:none}.pulse{animation:none}.rail{scroll-behavior:auto}}
 </style>
 </head>
@@ -269,21 +379,28 @@ footer .spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin
       <span class="mark"></span>
       <span class="wordmark">Sport Spectator<span>Miami sports, covered</span></span>
     </a>
-    <nav>
+    <nav id="nav">
       <a href="#" aria-current="page">Home</a>
       <a href="#">Calendar</a>
-      <a href="#">Dolphins</a>
       <a href="#">Hurricanes</a>
-      <a href="#">High School</a>
       <a href="#">Inter Miami</a>
+      <a href="#">Dolphins</a>
       <a href="#">Heat</a>
-      <a href="#">Marlins</a>
-      <a href="#">Panthers</a>
-      <a href="#">Gol Gala</a>
+      <div class="has-sub">
+        <a href="#" aria-haspopup="true" aria-expanded="false">High School<span class="caret">&#9662;</span></a>
+        <div class="sub">
+          <a href="#">Football</a>
+          <a href="#">Soccer</a>
+        </div>
+      </div>
+      <a href="#">Miami Soccer</a>
     </nav>
     <div class="mast-right">
       <span class="clock" id="clock">Mon Aug 31 · 4:12 PM</span>
       <a class="btn-press" href="#press">Press &amp; media</a>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </header>
@@ -293,31 +410,31 @@ footer .spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin
   <div class="wrap">
     <div class="mq-head">
       <h1>Games of the week</h1>
-      <span class="mq-note">Ranked by our desk · Aug 31 – Sep 6</span>
+      <span class="mq-note">Ranked by our desk · Sep 7 – Sep 13</span>
     </div>
     <ol class="mq-list">
       <li><a href="#">
         <span class="rank">1</span>
         <div>
-          <div class="mq-line"><span class="comp">La Liga · El Clásico</span><span class="mq-when">Sun 3:15 PM · ESPN+</span></div>
-          <h2>Real Madrid vs Barcelona</h2>
-          <p class="mq-why">The earliest Clásico in a decade, and both sides arrive unbeaten under new managers.</p>
+          <div class="mq-line"><span class="comp">NCAA Football &middot; Week 2</span><span class="mq-when">Sat 7:30 PM &middot; ABC</span></div>
+          <h2>Ohio State at Texas</h2>
+          <p class="mq-why">Julian Sayin and Arch Manning meet again in Austin, a year after the Buckeyes won 14-7 in Columbus.</p>
         </div>
       </a></li>
       <li><a href="#">
         <span class="rank">2</span>
         <div>
-          <div class="mq-line"><span class="comp">NCAA Football</span><span class="mq-when">Sat 7:30 PM · ABC</span></div>
-          <h2>Notre Dame at Miami</h2>
-          <p class="mq-why">Primetime at Hard Rock, a top-15 matchup, and the Canes' first real measuring stick.</p>
+          <div class="mq-line"><span class="comp">Premier League &middot; Derby</span><span class="mq-when">Sun 11:30 AM &middot; Peacock</span></div>
+          <h2>Man United vs Man City</h2>
+          <p class="mq-why">Michael Carrick&rsquo;s first Manchester derby at Old Trafford, in the same week United return to the Champions League.</p>
         </div>
       </a></li>
       <li><a href="#">
         <span class="rank">3</span>
         <div>
-          <div class="mq-line"><span class="comp">US Open · Quarterfinal</span><span class="mq-when">Wed 7:00 PM · ESPN</span></div>
-          <h2>Alcaraz vs Sinner</h2>
-          <p class="mq-why">Their sixth meeting of the year, and the first one arriving before a final.</p>
+          <div class="mq-line"><span class="comp">NFL &middot; Week 1</span><span class="mq-when">Sun 8:20 PM &middot; NBC</span></div>
+          <h2>Cowboys at Giants</h2>
+          <p class="mq-why">Sunday night at MetLife, and the first time these two have opened a season against each other since 2023.</p>
         </div>
       </a></li>
     </ol>
@@ -365,7 +482,7 @@ footer .spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin
       </article>
 
       <article class="game" style="--accent:var(--can)">
-        <div class="g-top"><span class="league"><span class="star">★</span>NCAA · ABC</span><span class="when">Sat 7:30</span></div>
+        <div class="g-top"><span class="league">NCAA · ABC</span><span class="when">Sat 7:30</span></div>
         <div class="t away"><span class="abbr" style="color:var(--blue)">ND</span><span class="t-name">Notre Dame</span><span class="val">1-0</span></div>
         <div class="t"><span class="abbr" style="color:var(--can)">MIA</span><span class="t-name">Hurricanes</span><span class="val">1-0</span></div>
       </article>
@@ -396,15 +513,16 @@ footer .spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin
 
     </div>
 
-    <div class="filters">
-      <button class="chip" data-on="true">All teams</button>
-      <button class="chip">Dolphins</button>
-      <button class="chip">Hurricanes</button>
-      <button class="chip">Inter Miami</button>
-      <button class="chip">Marlins</button>
-      <button class="chip">Heat</button>
-      <button class="chip">Panthers</button>
-    </div>
+    <a class="mhh" href="https://miahappyhrs.com" target="_blank" rel="noopener">
+      <span class="mhh-pin" aria-hidden="true"></span>
+      <span class="mhh-copy">
+        <b>Miami Happy Hours</b>
+        <span>The best deals that Miami has to offer</span>
+      </span>
+      <span class="mhh-sp"></span>
+      <span class="mhh-note">Find a spot near Hard Rock, Chase Stadium and loanDepot Park</span>
+      <span class="mhh-cta">Find tonight&rsquo;s deals</span>
+    </a>
   </div>
 </section>
 
@@ -465,38 +583,42 @@ footer .spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin
 
       <div class="card-body panel" id="p-power" role="tabpanel" aria-labelledby="t-power" hidden>
         <ol class="pr">
-          <li><span class="n">1</span><b>Auld Dubliner 7's</b><span class="mv ev">—</span></li>
-          <li><span class="n">2</span><b>La Oficina</b><span class="mv up">▲ 2</span></li>
-          <li><span class="n">3</span><b>Dade County FC</b><span class="mv up">▲ 1</span></li>
-          <li><span class="n">4</span><b>Por El Deporte</b><span class="mv dn">▼ 2</span></li>
-          <li><span class="n">5</span><b>SV Brickell</b><span class="mv ev">—</span></li>
-          <li><span class="n">6</span><b>La Selecta FC</b><span class="mv up">▲ 1</span></li>
-          <li><span class="n">7</span><b>Sport Spectator FC</b><span class="mv dn">▼ 1</span></li>
-          <li><span class="n">8</span><b>Los Magos</b><span class="mv ev">—</span></li>
+          <li><span class="n">1</span><b>Auld Dubliner 7&rsquo;s</b><span class="yr">2025</span></li>
+          <li><span class="n">2</span><b>La Oficina</b><span class="yr">2026</span></li>
+          <li><span class="n">3</span><b>SV Brickell</b><span class="yr">2026</span></li>
+          <li><span class="n">4</span><b>Los Fantasmas</b><span class="yr">2026</span></li>
+          <li><span class="n">5</span><b>Dade County FC</b><span class="yr">2026</span></li>
+          <li><span class="n">6</span><b>Athletic Core Fitness</b><span class="yr">2024</span></li>
+          <li><span class="n">7</span><b>Por El Deporte</b><span class="yr">2024</span></li>
+          <li><span class="n">8</span><b>La Selecta FC</b><span class="yr">2025</span></li>
         </ol>
       </div>
 
       <a class="card-foot" href="https://golgala.com">Scouting reports and full rankings at golgala.com</a>
     </section>
 
-    <section class="card">
+    <section class="card news">
       <div class="card-head">
-        <span class="eyebrow">Instagram</span>
-        <h3>@thesportspectator</h3>
+        <span class="eyebrow">Newsletter</span>
+        <h3>The Miami Wire</h3>
       </div>
-      <div class="ig-grid">
-        <span class="ig-tile"><b>POST</b></span><span class="ig-tile"><b>POST</b></span><span class="ig-tile"><b>POST</b></span>
-        <span class="ig-tile"><b>POST</b></span><span class="ig-tile"><b>POST</b></span><span class="ig-tile"><b>POST</b></span>
+      <div class="card-body">
+        <p class="news-blurb">Every Miami game on one page, the week&rsquo;s biggest matchups, and our original reporting. Sent free every Monday morning.</p>
+        <div class="news-form">
+          <input id="nl-email" type="email" inputmode="email" autocomplete="email" placeholder="you@email.com" aria-label="Email address">
+          <button id="nl-go" type="button">Subscribe</button>
+        </div>
+        <p class="news-msg" id="nl-msg" role="status"></p>
+        <p class="news-fine">Free. No spam. Unsubscribe any time.</p>
       </div>
-      <a class="card-foot" href="https://instagram.com/thesportspectator">Follow on Instagram</a>
     </section>
 
-    <a class="ad" href="https://miahappyhrs.com">
+    <a class="ad" href="https://pilatesandlattesclub.com" target="_blank" rel="noopener">
       <span class="adlabel">Partner</span>
-      <span class="eyebrow" style="color:var(--pink)">Before the game</span>
-      <h4>Every happy hour<em>in Miami.</em></h4>
-      <p>Deals near Hard Rock, Chase Stadium and loanDepot Park — searchable by neighborhood and time.</p>
-      <span class="cta">miahappyhrs.com</span>
+      <span class="ad-eyebrow">Wellness Social Club</span>
+      <h4>Pilates<em>&amp; Lattes</em></h4>
+      <p>A social-wellness community uniting Miami women through Pilates and coffee culture. Free classes in the park and on the sand, monthly Coffee &amp; Connect meetups, and pregame sessions at Inter Miami and the Marlins.</p>
+      <span class="cta">pilatesandlattesclub.com</span>
     </a>
 
   </aside>
@@ -619,25 +741,60 @@ const loadSlate = () => get('/api/slate').then(d => renderSlate(d.games || [])).
 loadSlate();
 setInterval(loadSlate, 60000);   // live scores tick every minute
 
-/* ── Instagram ─────────────────────────────────────────── */
-get('/api/instagram').then(d => {
-  const items = (d.items || []).slice(0,6);
-  if(!items.length) return;
-  document.querySelector('.ig-grid').innerHTML = items.map(m => `
-    <a class="ig-tile" href="${esc(m.permalink)}" target="_blank" rel="noopener"
-       style="background-image:url('${esc(m.image)}');background-size:cover;background-position:center"
-       aria-label="${esc(m.caption)}"></a>`).join('');
-}).catch(()=>{});
+/* ── Newsletter (beehiiv via /api/subscribe) ───────────── */
+const nlBtn = document.getElementById('nl-go');
+const nlIn  = document.getElementById('nl-email');
+const nlMsg = document.getElementById('nl-msg');
+
+async function subscribe(){
+  const email = nlIn.value.trim();
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+    nlMsg.className = 'news-msg err';
+    nlMsg.textContent = 'Enter a valid email address.';
+    return;
+  }
+  nlBtn.disabled = true;
+  nlMsg.className = 'news-msg';
+  nlMsg.textContent = 'Signing you up…';
+  try{
+    const r = await fetch(API + '/api/subscribe', {
+      method:'POST',
+      headers:{'content-type':'application/json'},
+      body: JSON.stringify({ email })
+    });
+    if(!r.ok) throw new Error();
+    nlMsg.className = 'news-msg ok';
+    nlMsg.textContent = 'You\u2019re in. Check your inbox to confirm.';
+    nlIn.value = '';
+  }catch(e){
+    nlMsg.className = 'news-msg err';
+    nlMsg.textContent = 'Something went wrong. Try again in a moment.';
+  }
+  nlBtn.disabled = false;
+}
+nlBtn.onclick = subscribe;
+nlIn.onkeydown = e => { if(e.key === 'Enter') subscribe(); };
+
+/* ── Mobile menu ───────────────────────────────────────── */
+const burger = document.getElementById('burger');
+const navEl  = document.getElementById('nav');
+
+function setMenu(open){
+  navEl.dataset.open = open ? 'true' : 'false';
+  burger.setAttribute('aria-expanded', String(open));
+  burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+burger.onclick = () => setMenu(navEl.dataset.open !== 'true');
+navEl.addEventListener('click', e => { if(e.target.tagName === 'A') setMenu(false); });
+document.addEventListener('keydown', e => { if(e.key === 'Escape') setMenu(false); });
+addEventListener('resize', () => { if(innerWidth > 900) setMenu(false); });
 
 /* ── UI ────────────────────────────────────────────────── */
 const rail = document.getElementById('rail');
 document.getElementById('prev').onclick = () => rail.scrollBy({left:-500});
 document.getElementById('next').onclick = () => rail.scrollBy({left: 500});
 
-document.querySelectorAll('.chip').forEach(c => c.onclick = () => {
-  document.querySelectorAll('.chip').forEach(x => x.dataset.on = 'false');
-  c.dataset.on = 'true';
-});
 
 document.querySelectorAll('.tab').forEach(tab => tab.onclick = () => {
   document.querySelectorAll('.tab').forEach(t => {
