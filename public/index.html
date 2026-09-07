@@ -549,7 +549,7 @@ footer .spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin
       <a class="sec-link" href="#">All coverage</a>
     </div>
 
-    <article class="lead">
+    <article class="lead" id="lead">
       <div class="photo"><span class="corner c1"></span><span class="corner c2"></span></div>
       <div>
         <span class="tag" style="color:var(--can)"><i></i>Hurricanes</span>
@@ -775,6 +775,46 @@ function renderSlate(games){
 const loadSlate = () => get('/api/slate').then(d => renderSlate(d.games || [])).catch(()=>{});
 loadSlate();
 setInterval(loadSlate, 60000);   // live scores tick every minute
+
+/* ── Latest articles (from the Astro build) ───────────── */
+const SECTION_META = {
+  'dolphins':{l:'Dolphins',c:'dol'}, 'hurricanes':{l:'Hurricanes',c:'can'},
+  'inter-miami':{l:'Inter Miami',c:'imcf'}, 'heat':{l:'Heat',c:'heat'},
+  'high-school-football':{l:'High School',c:'cyan'}, 'high-school-soccer':{l:'High School',c:'cyan'},
+  'miami-soccer':{l:'Miami Soccer',c:'azure'}, 'gol-gala':{l:'Gol Gala',c:'orange'}
+};
+const ago = iso => {
+  const h = (Date.now() - new Date(iso)) / 36e5;
+  if (h < 1) return 'Just now';
+  if (h < 24) return `${Math.round(h)}h ago`;
+  if (h < 48) return 'Yesterday';
+  return new Date(iso).toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'UTC'});
+};
+
+fetch('/articles.json').then(r => r.json()).then(({posts}) => {
+  if(!posts || !posts.length) return;
+  const [lead, ...rest] = posts;
+  const m = SECTION_META[lead.section] || {l:lead.section,c:'orange'};
+
+  document.getElementById('lead').innerHTML = `
+    <div class="photo">${lead.image ? `<img src="${esc(lead.image)}" alt="" style="width:100%;height:100%;object-fit:cover">`
+      : '<span class="corner c1"></span><span class="corner c2"></span>'}</div>
+    <div>
+      <span class="tag" style="color:var(--${m.c})"><i></i>${esc(m.l)}</span>
+      <h3><a href="${esc(lead.url)}">${esc(lead.title)}</a></h3>
+      <p>${esc(lead.dek)}</p>
+      <span class="byline">${esc(lead.author)} · ${ago(lead.date)}</span>
+    </div>`;
+
+  document.querySelector('.stories').innerHTML = rest.slice(0,6).map(p => {
+    const mm = SECTION_META[p.section] || {l:p.section,c:'orange'};
+    return `<li><a href="${esc(p.url)}">
+      <span class="thumb"><b>IMG</b></span>
+      <span><span class="tag" style="color:var(--${mm.c})"><i></i>${esc(mm.l)}</span>
+      <h4>${esc(p.title)}</h4></span>
+      <span class="stamp">${ago(p.date)}</span></a></li>`;
+  }).join('');
+}).catch(()=>{});
 
 /* ── Newsletter (beehiiv via /api/subscribe) ───────────── */
 const nlBtn = document.getElementById('nl-go');
