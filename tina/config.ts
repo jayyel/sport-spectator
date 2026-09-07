@@ -4,9 +4,13 @@ const branch = process.env.GITHUB_BRANCH || process.env.HEAD || 'main';
 
 export default defineConfig({
   branch,
-  clientId: process.env.NEXT_PUBLIC_TINA_CLIENT_ID!,
-  token: process.env.TINA_TOKEN!,
 
+  // Client ID is public by design — it identifies the project, it doesn't grant access.
+  // The token is what's sensitive, so that stays in an environment variable.
+  clientId: 'd1cf7cdd-97f4-4678-bfd5-643329e023ab',
+  token: process.env.TINA_TOKEN,
+
+  // Builds the editor into public/admin, which Astro then copies to dist/admin.
   build: { outputFolder: 'admin', publicFolder: 'public' },
   media: { tina: { mediaRoot: 'images', publicFolder: 'public' } },
 
@@ -24,7 +28,6 @@ export default defineConfig({
         }),
         ui: {
           filename: {
-            // Slug from the headline, so URLs stay readable.
             slugify: (values) =>
               (values?.title || 'untitled')
                 .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60),
