@@ -1,8 +1,9 @@
 name: Generate Tina lock file
 
-# Run this by hand from the Actions tab whenever tina/config.ts changes.
-# It builds the Tina schema and commits tina/tina-lock.json back to the repo,
-# which is what TinaCloud reads to index your content.
+# Builds the Tina schema and commits tina/tina-lock.json AND tina/__generated__
+# back to the repo. TinaCloud reads both to index your content.
+#
+# Run by hand from the Actions tab, or automatically when tina/config.ts changes.
 
 on:
   workflow_dispatch:
@@ -21,25 +22,40 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install dependencies
         run: npm install
 
+      - name: Diagnostics
+        run: |
+          node --version
+          npx tinacms --version || echo "tinacms CLI did not resolve"
+          echo "--- tina/ ---"
+          ls -la tina/ 2>/dev/null || echo "no tina directory"
+
+      # --skip-cloud-checks bypasses the branch-status check, which is what
+      #   blocks a first run: the branch can't be on TinaCloud until a lock
+      #   file exists, and the lock file can't build until the check passes.
+      # --skip-indexing avoids uploading a search index we don't need yet.
       - name: Build Tina schema
         env:
           TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
-        run: npx @tinacms/cli build
+        run: npx tinacms build --skip-cloud-checks --skip-indexing
 
-      - name: Commit the lock file
+      - name: Show what was generated
+        run: |
+          find tina -type f -not -path '*/node_modules/*' | head -40
+
+      - name: Commit generated Tina files
         run: |
           if [ -n "$(git status --porcelain tina/)" ]; then
             git config user.name  "Sport Spectator bot"
             git config user.email "bot@thesportspectator.com"
-            git add tina/tina-lock.json
-            git commit -m "Update Tina lock file"
+            git add -f tina/
+            git commit -m "Generate Tina schema and lock file"
             git push
-            echo "Lock file committed."
+            echo "Committed."
           else
-            echo "No change to the lock file."
+            echo "Nothing changed in tina/."
           fi
