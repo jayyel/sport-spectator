@@ -2,138 +2,71 @@
 
 Miami sports coverage. Published by Sport Spectator Gol Gala LLC.
 
-Static site on Cloudflare Pages, live data from a Cloudflare Worker.
-The page reads pre-built JSON from KV, so a visitor never triggers an upstream call.
-
 ```
-public/                 static site — this is what Pages deploys
-  index.html
-worker/                 data layer
-  src/index.js          cron jobs + /api routes
-  wrangler.toml
-```
-
----
-
-## 1. Push to GitHub
-
-```bash
-cd sport-spectator
-git init && git add . && git commit -m "Initial site and data worker"
-git branch -M main
-git remote add origin https://github.com/YOUR-USERNAME/sport-spectator.git
-git push -u origin main
+wrangler.toml            one Worker serves the site + /api/*
+astro.config.mjs
+public/index.html        homepage — copied verbatim by Astro, untouched
+src/
+  content/articles/*.md  articles (TinaCMS edits these)
+  content.config.ts      frontmatter schema
+  layouts/               Base + Article
+  pages/                 /articles, /section/[section], /articles.json
+worker/src/index.js      cron jobs + API routes
+tina/config.ts           CMS schema
+scripts/draft-article.mjs
+.github/workflows/daily-article.yml
 ```
 
-## 2. Connect Cloudflare Pages
+## Cloudflare build settings
 
-Cloudflare dashboard → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**.
+Change the build configuration on the `sport-spectator` Worker:
 
-- Repository: `sport-spectator`
-- Production branch: `main`
-- Framework preset: **None**
-- Build command: *(leave empty)*
-- Build output directory: `public`
+- **Build command:** `npm install && npm run build`
+- **Deploy command:** `npx wrangler deploy`
+- **Root directory:** `/`
 
-Every push to `main` now deploys automatically. Every other branch gets its own preview URL.
+Astro outputs to `dist/`, which is what `wrangler.toml` now serves.
+`public/` is copied into `dist/` verbatim, so the homepage is unchanged.
 
-Note: once a project is Git-connected you cannot switch it to Direct Upload later.
+## URLs
 
-## 3. Custom domain
+| Path | What |
+|---|---|
+| `/` | homepage (public/index.html) |
+| `/articles/` | all coverage |
+| `/articles/<slug>/` | an article |
+| `/section/dolphins/` | section index (one per section) |
+| `/articles.json` | feed the homepage Latest list reads |
+| `/admin/` | TinaCMS |
+| `/api/*` | Worker |
 
-Pages project → **Custom domains** → add `thesportspectator.com` and `www`.
-If the domain's nameservers are already on Cloudflare, the DNS records are created for you.
+## Daily drafts
 
-## 4. Deploy the Worker
+`.github/workflows/daily-article.yml` runs at 06:00 ET. Claude searches the day's
+news, writes one piece, and commits it with `draft: true`. Nothing publishes until
+you uncheck Draft in TinaCMS.
 
-```bash
-cd worker
-npm install -g wrangler
-wrangler login
+Required GitHub secrets: `ANTHROPIC_API_KEY`.
+Optional, for the SMS ping: `TWILIO_SID`, `TWILIO_TOKEN`, `TWILIO_FROM`, `TWILIO_TO`.
 
-# Create the KV namespace, then paste the returned id into wrangler.toml
-wrangler kv namespace create SS
+Run it by hand any time from the Actions tab via "Run workflow".
 
-# Secrets — these never touch the repo
-wrangler secret put ADMIN_KEY          # any long random string
-wrangler secret put IG_TOKEN           # see step 5
-wrangler secret put ANTHROPIC_API_KEY  # optional, for games-of-the-week
+## Article images
 
-wrangler deploy
+Every article gets a designed card automatically — section colour, spectrum rail,
+headline, Sport Spectator mark. No file needed, no licensing exposure, and it
+applies to future articles without any extra work.
+
+To use a real photograph instead, add to the frontmatter:
+
+```yaml
+image: /images/gol-gala-final-2026.jpg
+imageAlt: "Two players challenge for a header at OB Johnson Park"
+imageCredit: "Unico Creative Studio"
 ```
 
-Then edit `public/index.html` and set `API` to the Worker URL wrangler prints.
+Put the file in `public/images/`. It overrides the card everywhere — article page,
+index, section page and homepage.
 
-Better long-term: put the Worker on a route so there's no cross-origin hop. In the
-Worker's settings add the route `thesportspectator.com/api/*`, then set `API = ''`
-in `index.html`.
-
-Warm the cache immediately instead of waiting for the first cron:
-
-```bash
-curl "https://YOUR-WORKER-URL/api/refresh?key=YOUR_ADMIN_KEY"
-```
-
-## 5. Instagram token
-
-@thesportspectator is already a Business account, so this is straightforward.
-Because you own the account and will add it to your own app, Standard Access is
-enough — no App Review needed for reading your own media.
-
-1. developers.facebook.com → your app → add the **Instagram** product
-2. Configure **Business login**, scope `instagram_business_basic`
-3. Add @thesportspectator under **Instagram → API setup**
-4. Generate a token, exchange it for a long-lived one, set it as `IG_TOKEN`
-
-The Worker refreshes the token weekly. Long-lived tokens last 60 days and can be
-refreshed any time after 24 hours, so this stays alive on its own — but if the
-grid ever goes blank, an expired token is the first thing to check.
-
-## 6. Games of the week
-
-Monday 7am ET the Worker asks Claude to search the week's schedules and propose
-three games, and writes them to `gow:proposal`.
-
-```bash
-# see the proposal
-curl "https://YOUR-WORKER-URL/api/games-of-week/proposal"
-
-# publish it
-curl "https://YOUR-WORKER-URL/api/games-of-week/approve?key=YOUR_ADMIN_KEY"
-```
-
-To override with your own picks, write directly to `gow:current`:
-
-```bash
-wrangler kv key put --binding=SS gow:current '{"games":[
-  {"comp":"La Liga · El Clásico","matchup":"Real Madrid vs Barcelona",
-   "when":"Sun 3:15 PM · ESPN+","why":"Both sides arrive unbeaten under new managers."}
-]}'
-```
-
-The first proposal auto-publishes so the row is never empty. After that it waits
-for you.
-
----
-
-## What updates on its own
-
-| | Source | Frequency | Cost |
-|---|---|---|---|
-| Miami slate, live scores | ESPN public JSON | 60 seconds | free |
-| Live wire | Google News RSS | 15 minutes | free |
-| Instagram grid | Instagram Graph API | 6 hours | free |
-| Games of the week | Claude, then your approval | weekly | ~$0.05/wk |
-| Articles | you and your writers | — | — |
-
-Cloudflare Workers Free covers this, though the every-minute cron makes the $5
-paid plan worth it for headroom.
-
-## Known limits
-
-- ESPN's endpoints are undocumented and unofficial. They work well and cost
-  nothing, but there's no SLA. The Worker fails soft per league — if one breaks,
-  the rest of the slate still renders and the league name lands in `failed`.
-- Live game status strings vary by sport (`Bot 6`, `Q3 4:12`, `72'`). They render
-  as ESPN provides them.
-- The wire stores headline, source and link only. Never article text.
+Only publish photographs you own or have licensed. Wire photos (AP, Getty, Imagn)
+and team-issued press images are not usable without a licence or credential.
