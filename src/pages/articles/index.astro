@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { SECTION_META } from '../../layouts/Article.astro';
+import ArticleCard from '../../layouts/ArticleCard.astro';
 
 const posts = (await getCollection('articles', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date - a.data.date);
@@ -15,11 +16,18 @@ const fmt = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric
       {posts.map((p) => {
         const m = SECTION_META[p.data.section];
         return (
-          <li><a href={`/articles/${p.id}/`}>
-            <span class="tag" style={`color:var(--${m.color})`}><i></i>{m.label}</span>
-            <h2>{p.data.title}</h2>
-            {p.data.dek && <p>{p.data.dek}</p>}
-            <span class="meta">{p.data.author} · {fmt(p.data.date)}</span>
+          <li><a href={`/articles/${p.id}/`} class="row">
+            <span class="rowimg">
+              {p.data.image
+                ? <img src={p.data.image} alt="" loading="lazy" />
+                : <ArticleCard title={p.data.title} section={p.data.section} color={m.color} label={m.label} size="thumb" />}
+            </span>
+            <span>
+              <span class="tag" style={`color:var(--${m.color})`}><i></i>{m.label}</span>
+              <h2>{p.data.title}</h2>
+              {p.data.dek && <p>{p.data.dek}</p>}
+              <span class="meta">{p.data.author} · {fmt(p.data.date)}</span>
+            </span>
           </a></li>
         );
       })}
@@ -34,6 +42,10 @@ const fmt = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric
 .feed{list-style:none;margin:0;padding:0}
 .feed li{border-bottom:1px solid var(--line-soft)}
 .feed a{display:block;padding:24px 0}
+.feed a.row{display:grid;grid-template-columns:104px 1fr;gap:20px;align-items:start}
+.rowimg{display:block}
+.rowimg img{width:104px;height:104px;object-fit:cover;border-radius:3px;display:block}
+@media (max-width:600px){.feed a.row{grid-template-columns:64px 1fr;gap:14px}.rowimg img{width:64px;height:64px}}
 .feed h2{font-size:23px;font-weight:800;line-height:1.16;letter-spacing:-.018em;margin:10px 0 0}
 .feed a:hover h2{color:var(--orange)}
 .feed p{font-size:14.5px;line-height:1.55;color:var(--cream-45);margin:9px 0 0;max-width:62ch}
