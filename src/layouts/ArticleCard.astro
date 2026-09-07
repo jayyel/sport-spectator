@@ -1,0 +1,52 @@
+---
+/**
+ * Designed fallback image for articles with no photograph.
+ * Section colour, spectrum rail, headline. No licensing exposure,
+ * and it renders for every future article automatically.
+ */
+const { title, section, color, label, size = 'hero' } = Astro.props;
+const short = title.length > 88 ? title.slice(0, 85).trimEnd() + '…' : title;
+---
+<div class={`card-img ${size}`} style={`--c:var(--${color})`} aria-hidden="true">
+  <span class="ci-rail"></span>
+  <span class="ci-mark"></span>
+  {size === 'hero' && <span class="ci-label">{label}</span>}
+  <span class="ci-title">{short}</span>
+  <span class="ci-brand">Sport Spectator</span>
+</div>
+
+<style is:global>
+.card-img{
+  position:relative;overflow:hidden;border-radius:3px;
+  border:1px solid var(--line-soft);
+  background:
+    radial-gradient(120% 90% at 8% 0%, color-mix(in srgb, var(--c) 26%, transparent), transparent 62%),
+    linear-gradient(150deg, var(--ink-3), var(--ink-2) 55%, var(--ink));
+  display:flex;flex-direction:column;justify-content:flex-end;
+}
+.card-img.hero{aspect-ratio:16/9;padding:26px 28px 24px}
+.card-img.thumb{aspect-ratio:1;padding:9px}
+.ci-rail{position:absolute;inset:0 0 auto 0;height:3px;background:var(--spectrum)}
+.ci-mark{
+  position:absolute;top:22px;right:24px;width:26px;height:26px;border-radius:50%;
+  background:conic-gradient(from 200deg,var(--blue),var(--azure),var(--cyan),var(--pink),var(--coral),var(--orange),var(--blue));
+  opacity:.9;
+}
+.ci-mark::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--ink)}
+.ci-label{
+  font-size:10px;font-weight:800;letter-spacing:.20em;text-transform:uppercase;
+  color:var(--c);margin-bottom:10px;
+}
+.ci-title{
+  font-size:clamp(19px,2.3vw,27px);font-weight:900;line-height:1.1;letter-spacing:-.022em;
+  color:var(--cream);max-width:24ch;
+}
+.ci-brand{
+  font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--cream-28);margin-top:16px;
+}
+/* thumbnail variant: colour block only, no text */
+.card-img.thumb .ci-title,.card-img.thumb .ci-brand{display:none}
+.card-img.thumb .ci-mark{top:50%;right:50%;transform:translate(50%,-50%);width:20px;height:20px;opacity:.55}
+.card-img.thumb .ci-mark::after{inset:6px}
+</style>
