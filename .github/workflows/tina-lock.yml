@@ -1,0 +1,45 @@
+name: Generate Tina lock file
+
+# Run this by hand from the Actions tab whenever tina/config.ts changes.
+# It builds the Tina schema and commits tina/tina-lock.json back to the repo,
+# which is what TinaCloud reads to index your content.
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'tina/config.ts'
+
+permissions:
+  contents: write
+
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Tina schema
+        env:
+          TINA_TOKEN: ${{ secrets.TINA_TOKEN }}
+        run: npx @tinacms/cli build
+
+      - name: Commit the lock file
+        run: |
+          if [ -n "$(git status --porcelain tina/)" ]; then
+            git config user.name  "Sport Spectator bot"
+            git config user.email "bot@thesportspectator.com"
+            git add tina/tina-lock.json
+            git commit -m "Update Tina lock file"
+            git push
+            echo "Lock file committed."
+          else
+            echo "No change to the lock file."
+          fi
