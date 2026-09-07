@@ -1,0 +1,13 @@
+fragment ArticleParts on Article {
+  __typename
+  title
+  dek
+  section
+  author
+  date
+  draft
+  image
+  imageCredit
+  tags
+  body
+}
