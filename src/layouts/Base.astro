@@ -1,0 +1,96 @@
+---
+const { title, description, image, type = 'website' } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const SECTIONS = [
+  { slug: 'hurricanes',           label: 'Hurricanes' },
+  { slug: 'inter-miami',          label: 'Inter Miami' },
+  { slug: 'dolphins',             label: 'Dolphins' },
+  { slug: 'heat',                 label: 'Heat' },
+  { slug: 'high-school-football', label: 'HS Football' },
+  { slug: 'high-school-soccer',   label: 'HS Soccer' },
+  { slug: 'miami-soccer',         label: 'Miami Soccer' },
+];
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{title} — Sport Spectator</title>
+<meta name="description" content={description}>
+<link rel="canonical" href={url}>
+<meta property="og:site_name" content="Sport Spectator">
+<meta property="og:type" content={type}>
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={url}>
+{image && <meta property="og:image" content={image}>}
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style is:global>
+:root{
+  --ink:#0B0F1A;--ink-2:#10162A;--ink-3:#161D35;
+  --line:rgba(250,248,244,.13);--line-soft:rgba(250,248,244,.07);
+  --cream:#FAF8F4;--cream-70:rgba(250,248,244,.70);
+  --cream-45:rgba(250,248,244,.45);--cream-28:rgba(250,248,244,.28);
+  --blue:#3B6BD6;--azure:#1B8FE0;--cyan:#22D3EE;
+  --pink:#FF2E63;--coral:#FF4F2D;--orange:#FF7A29;
+  --dol:#008E97;--can:#F47321;--heat:#F9A01B;--imcf:#F7B5CD;--mia:#00A3E0;
+  --spectrum:linear-gradient(90deg,var(--blue),var(--azure),var(--cyan),var(--pink),var(--coral),var(--orange));
+  --wrap:1340px;
+}
+*{box-sizing:border-box}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;background:var(--ink);color:var(--cream);
+  font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 28px}
+.eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.20em;text-transform:uppercase;color:var(--orange)}
+
+.masthead{border-bottom:1px solid var(--line);background:rgba(11,15,26,.93);position:sticky;top:0;z-index:40}
+.mast-inner{display:flex;align-items:center;gap:30px;height:70px}
+.logo{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.mark{width:32px;height:32px;border-radius:50%;position:relative;
+  background:conic-gradient(from 200deg,var(--blue),var(--azure),var(--cyan),var(--pink),var(--coral),var(--orange),var(--blue))}
+.mark::after{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--ink)}
+.wordmark{font-size:18px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;line-height:1}
+.wordmark span{display:block;font-size:8.5px;font-weight:600;letter-spacing:.26em;color:var(--cream-45);margin-top:4px}
+nav{display:flex;gap:17px;font-size:12.5px;font-weight:600;color:var(--cream-70);flex:1;white-space:nowrap;flex-wrap:wrap}
+nav a{padding:4px 0;border-bottom:2px solid transparent}
+nav a:hover,nav a[aria-current]{color:var(--cream);border-bottom-color:var(--coral)}
+
+.tag{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.tag i{width:7px;height:7px;border-radius:50%;background:currentColor;font-style:normal}
+
+footer{border-top:1px solid var(--line);margin-top:70px;padding:30px 0 46px;
+  font-size:11.5px;color:var(--cream-28);display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin-bottom:26px}
+@media (max-width:720px){.wrap{padding:0 18px}nav{display:none}}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <a class="logo" href="/"><span class="mark"></span>
+      <span class="wordmark">Sport Spectator<span>Miami sports, covered</span></span></a>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/articles/">Latest</a>
+      {SECTIONS.map((s) => <a href={`/section/${s.slug}/`}>{s.label}</a>)}
+    </nav>
+  </div>
+</header>
+<main><slot /></main>
+<div class="wrap">
+  <footer>
+    <span class="spec"></span>
+    <span>© 2026 Sport Spectator Gol Gala LLC · Miami, Florida</span>
+    <span>Original reporting, photography and video.</span>
+  </footer>
+</div>
+</body>
+</html>

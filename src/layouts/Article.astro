@@ -1,0 +1,70 @@
+---
+import Base from './Base.astro';
+export const SECTION_META = {
+  'dolphins':             { label: 'Dolphins',      color: 'dol'    },
+  'hurricanes':           { label: 'Hurricanes',    color: 'can'    },
+  'inter-miami':          { label: 'Inter Miami',   color: 'imcf'   },
+  'heat':                 { label: 'Heat',          color: 'heat'   },
+  'high-school-football': { label: 'High School',   color: 'cyan'   },
+  'high-school-soccer':   { label: 'High School',   color: 'cyan'   },
+  'miami-soccer':         { label: 'Miami Soccer',  color: 'azure'  },
+  'gol-gala':             { label: 'Gol Gala',      color: 'orange' },
+};
+const { entry } = Astro.props;
+const d = entry.data;
+const meta = SECTION_META[d.section];
+const dateStr = d.date.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' });
+const iso = d.date.toISOString();
+const ld = {
+  '@context': 'https://schema.org', '@type': 'NewsArticle',
+  headline: d.title, description: d.dek, datePublished: iso,
+  author: { '@type': 'Person', name: d.author },
+  publisher: { '@type': 'Organization', name: 'Sport Spectator' },
+};
+---
+<Base title={d.title} description={d.dek} image={d.image} type="article">
+  <article class="story">
+    <div class="wrap">
+      <a class="tag" style={`color:var(--${meta.color})`} href={`/section/${d.section}/`}><i></i>{meta.label}</a>
+      <h1>{d.title}</h1>
+      {d.dek && <p class="dek">{d.dek}</p>}
+      <p class="byline">By {d.author} · <time datetime={iso}>{dateStr}</time></p>
+      {d.image && (
+        <figure><img src={d.image} alt="" loading="eager" />
+          {d.imageCredit && <figcaption>{d.imageCredit}</figcaption>}</figure>
+      )}
+      <div class="body"><slot /></div>
+      {d.tags.length > 0 && (
+        <ul class="tags">{d.tags.map((t) => <li>{t}</li>)}</ul>
+      )}
+    </div>
+  </article>
+  <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+</Base>
+
+<style is:global>
+.story{padding:40px 0 20px}
+.story .wrap{max-width:760px}
+.story h1{font-size:clamp(30px,4.6vw,46px);font-weight:900;line-height:1.03;letter-spacing:-.025em;margin:14px 0 0}
+.story .dek{font-size:18px;line-height:1.5;color:var(--cream-70);margin:16px 0 0;font-weight:500}
+.story .byline{font-size:12px;font-weight:600;color:var(--cream-28);letter-spacing:.04em;margin:20px 0 0;
+  padding-bottom:22px;border-bottom:1px solid var(--line)}
+.story figure{margin:26px 0 0}
+.story figure img{width:100%;border-radius:3px;display:block}
+.story figcaption{font-size:11px;color:var(--cream-28);margin-top:8px}
+.body{font-size:17px;line-height:1.72;color:var(--cream-70)}
+.body p{margin:22px 0}
+.body h2{font-size:23px;font-weight:800;letter-spacing:-.018em;color:var(--cream);margin:38px 0 -6px}
+.body h3{font-size:18px;font-weight:800;color:var(--cream);margin:30px 0 -10px}
+.body strong{color:var(--cream);font-weight:700}
+.body a{color:var(--cream);border-bottom:1px solid var(--coral)}
+.body a:hover{color:var(--orange)}
+.body blockquote{margin:28px 0;padding:2px 0 2px 20px;border-left:2px solid var(--orange);
+  font-size:19px;line-height:1.5;color:var(--cream);font-weight:600}
+.body ul,.body ol{padding-left:22px}
+.body li{margin:9px 0}
+.body hr{border:0;border-top:1px solid var(--line);margin:36px 0}
+.tags{list-style:none;display:flex;flex-wrap:wrap;gap:7px;padding:0;margin:40px 0 0}
+.tags li{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--cream-45);border:1px solid var(--line);border-radius:20px;padding:5px 11px}
+</style>

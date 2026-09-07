@@ -1,0 +1,41 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { SECTION_META } from '../../layouts/Article.astro';
+
+const posts = (await getCollection('articles', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date - a.data.date);
+const fmt = (d) => d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+---
+<Base title="Latest" description="Original Miami sports reporting from Sport Spectator.">
+  <div class="wrap index">
+    <span class="eyebrow">All coverage</span>
+    <h1>Latest</h1>
+    <ul class="feed">
+      {posts.map((p) => {
+        const m = SECTION_META[p.data.section];
+        return (
+          <li><a href={`/articles/${p.id}/`}>
+            <span class="tag" style={`color:var(--${m.color})`}><i></i>{m.label}</span>
+            <h2>{p.data.title}</h2>
+            {p.data.dek && <p>{p.data.dek}</p>}
+            <span class="meta">{p.data.author} · {fmt(p.data.date)}</span>
+          </a></li>
+        );
+      })}
+    </ul>
+  </div>
+</Base>
+
+<style is:global>
+.index{padding:44px 0 10px;max-width:900px}
+.index h1{font-size:clamp(32px,5vw,48px);font-weight:900;letter-spacing:-.025em;margin:10px 0 26px;
+  padding-bottom:16px;border-bottom:2px solid var(--cream)}
+.feed{list-style:none;margin:0;padding:0}
+.feed li{border-bottom:1px solid var(--line-soft)}
+.feed a{display:block;padding:24px 0}
+.feed h2{font-size:23px;font-weight:800;line-height:1.16;letter-spacing:-.018em;margin:10px 0 0}
+.feed a:hover h2{color:var(--orange)}
+.feed p{font-size:14.5px;line-height:1.55;color:var(--cream-45);margin:9px 0 0;max-width:62ch}
+.feed .meta{display:block;font-size:11.5px;font-weight:600;color:var(--cream-28);margin-top:12px;letter-spacing:.04em}
+</style>
