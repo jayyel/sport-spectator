@@ -26,14 +26,46 @@ const WIRE_QUERIES = [
 ];
 
 /**
- * ESPN's edge sits behind bot protection. A generic or missing user-agent
- * gets an HTML challenge page instead of JSON, which then fails to parse.
+ * ESPN changed its user-agent filter on 2026-08-04 and it runs backwards
+ * from the usual one: browser strings and bare custom tokens are refused,
+ * while honest client tokens (with a link) and plain curl/requests defaults
+ * are allowed. Sending a Chrome string is the one guaranteed 403.
+ *
+ * We try these in order and cache whichever works, so steady-state is a
+ * single request per league.
  */
-const HEADERS = {
-  'user-agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36',
-  'accept': 'application/json, text/plain, */*',
-  'accept-language': 'en-US,en;q=0.9',
-};
+const AGENTS = [
+  'SportSpectator/1.0 (+https://thesportspectator.com)',
+  'curl/8.20.0',
+  'python-requests/2.32.3',
+  'Mozilla/5.0 (compatible; SportSpectator/1.0; +https://thesportspectator.com)',
+];
+
+async function espnFetch(url, env) {
+  const cached = await env.SS.get('espn:ua');
+  const order = cached ? [cached, ...AGENTS.filter((a) => a !== cached)] : AGENTS;
+  let lastError = 'unknown';
+
+  for (const ua of order) {
+    try {
+      const res = await fetch(url, { headers: { 'user-agent': ua } });
+      if (!res.ok) { lastError = `HTTP ${res.status} (ua: ${ua.slice(0, 24)})`; continue; }
+
+      const ctype = res.headers.get('content-type') || '';
+      if (!ctype.includes('json')) {
+        lastError = `non-JSON ${ctype} (ua: ${ua.slice(0, 24)})`;
+        continue;
+      }
+
+      const data = await res.json();
+      if (ua !== cached) await env.SS.put('espn:ua', ua);
+      return { data, ua };
+    } catch (e) {
+      lastError = `${e.name}: ${e.message}`.slice(0, 120);
+    }
+  }
+  return { error: lastError };
+}
 
 const json = (data, maxAge = 60) =>
   new Response(JSON.stringify(data), {
@@ -64,34 +96,18 @@ function urlsFor(team) {
  * Never throws. Returns { games, error } so a failure is visible
  * in the payload rather than collapsing to a league name.
  */
-async function fetchLeague(team) {
+async function fetchLeague(team, env) {
   let lastError = 'unknown';
 
   for (const url of urlsFor(team)) {
-    try {
-      const res = await fetch(url, { headers: HEADERS });
-      const ctype = res.headers.get('content-type') || '';
+    const { data, error, ua } = await espnFetch(url, env);
+    if (error) { lastError = error; continue; }
 
-      if (!res.ok) {
-        lastError = `HTTP ${res.status}`;
-        continue;
-      }
-      if (!ctype.includes('json')) {
-        const peek = (await res.text()).slice(0, 80).replace(/\s+/g, ' ');
-        lastError = `non-JSON (${ctype}): ${peek}`;
-        continue;
-      }
-
-      const data = await res.json();
-      const events = data.events || [];
-      const games = events.map((ev) => parseEvent(ev, team)).filter(Boolean);
-
-      // A valid response with zero matching games is not an error — it just
-      // means this team isn't playing in the window.
-      return { games, error: null, sawEvents: events.length };
-    } catch (e) {
-      lastError = `${e.name}: ${e.message}`.slice(0, 120);
-    }
+    const events = data.events || [];
+    const games = events.map((ev) => parseEvent(ev, team)).filter(Boolean);
+    // A valid response with no matching games isn't an error — this team
+    // simply isn't playing in the window.
+    return { games, error: null, sawEvents: events.length, ua };
   }
 
   return { games: [], error: lastError, sawEvents: 0 };
@@ -143,7 +159,7 @@ function parseEvent(ev, team) {
 
 async function buildSlate(env) {
   const keys = Object.keys(TEAMS);
-  const results = await Promise.all(keys.map((k) => fetchLeague(TEAMS[k])));
+  const results = await Promise.all(keys.map((k) => fetchLeague(TEAMS[k], env)));
 
   let games = [];
   const errors = {};
@@ -183,7 +199,7 @@ const decode = (s) => s
 
 async function fetchWireFor(entry) {
   const url = `https://news.google.com/rss/search?q=${encodeURIComponent(entry.q + ' when:2d')}&hl=en-US&gl=US&ceid=US:en`;
-  const res = await fetch(url, { headers: HEADERS });
+  const res = await fetch(url, { headers: { 'user-agent': AGENTS[0] } });
   if (!res.ok) return [];
   const xml = await res.text();
 
@@ -283,19 +299,17 @@ export default {
         if (!team) return json({ error: 'unknown league', valid: Object.keys(TEAMS) }, 0);
 
         const url = urlsFor(team)[0];
-        try {
-          const res = await fetch(url, { headers: HEADERS });
-          const body = await res.text();
-          return json({
-            url,
-            status: res.status,
-            contentType: res.headers.get('content-type'),
-            length: body.length,
-            preview: body.slice(0, 700),
-          }, 0);
-        } catch (e) {
-          return json({ url, threw: `${e.name}: ${e.message}` }, 0);
+        const tried = [];
+        for (const ua of AGENTS) {
+          try {
+            const res = await fetch(url, { headers: { 'user-agent': ua } });
+            const ctype = res.headers.get('content-type') || '';
+            tried.push({ ua, status: res.status, contentType: ctype });
+          } catch (e) {
+            tried.push({ ua, threw: `${e.name}: ${e.message}`.slice(0, 100) });
+          }
         }
+        return json({ url, cachedAgent: await env.SS.get('espn:ua'), tried }, 0);
       }
 
       case '/api/refresh': {
