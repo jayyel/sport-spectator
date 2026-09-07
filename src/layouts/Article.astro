@@ -1,5 +1,6 @@
 ---
 import Base from './Base.astro';
+import ArticleCard from './ArticleCard.astro';
 export const SECTION_META = {
   'dolphins':             { label: 'Dolphins',      color: 'dol'    },
   'hurricanes':           { label: 'Hurricanes',    color: 'can'    },
@@ -29,10 +30,12 @@ const ld = {
       <h1>{d.title}</h1>
       {d.dek && <p class="dek">{d.dek}</p>}
       <p class="byline">By {d.author} · <time datetime={iso}>{dateStr}</time></p>
-      {d.image && (
-        <figure><img src={d.image} alt="" loading="eager" />
-          {d.imageCredit && <figcaption>{d.imageCredit}</figcaption>}</figure>
-      )}
+      <figure>
+        {d.image
+          ? <img src={d.image} alt={d.imageAlt ?? ''} loading="eager" />
+          : <ArticleCard title={d.title} section={d.section} color={meta.color} label={meta.label} />}
+        {d.imageCredit && <figcaption>{d.imageCredit}</figcaption>}
+      </figure>
       <div class="body"><slot /></div>
       {d.tags.length > 0 && (
         <ul class="tags">{d.tags.map((t) => <li>{t}</li>)}</ul>
