@@ -14,4 +14,4 @@ crons = ["* * * * *"]
 
 [[kv_namespaces]]
 binding = "SS"
-id = "PASTE_YOUR_KV_NAMESPACE_ID_HERE"
+id = "84bb007f0bd0445cb47ee23cf03ea1a1"
