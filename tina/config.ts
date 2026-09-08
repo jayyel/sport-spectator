@@ -7,7 +7,7 @@ export default defineConfig({
 
   // Client ID is public by design — it identifies the project, it doesn't grant access.
   // The token is what's sensitive, so that stays in an environment variable.
-  clientId: 'd1cf7cdd-97f4-4678-bfd5-643329e023ab',
+  clientId: '9418b328-681b-40dc-a294-45ba6fa18de9',
   token: process.env.TINA_TOKEN,
 
   // Builds the editor into public/admin, which Astro then copies to dist/admin.
