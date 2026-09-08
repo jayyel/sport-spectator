@@ -1,0 +1,60 @@
+name: Daily article draft
+
+# Writes one article a day as a DRAFT. Nothing publishes until you set
+# draft: false — in TinaCMS, or by editing the file in GitHub.
+
+on:
+  schedule:
+    - cron: '0 10 * * *'    # 06:00 ET
+  workflow_dispatch:         # "Run workflow" button in the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate draft
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          AUTO_PUBLISH: 'false'          # 'true' skips review and publishes
+          BYLINE: 'John Lasak'
+        run: node scripts/draft-article.mjs
+
+      - name: Commit the draft
+        id: commit
+        run: |
+          if [ -n "$(git status --porcelain src/content/articles)" ]; then
+            FILE=$(git status --porcelain src/content/articles | awk '{print $2}' | head -1)
+            HEADLINE=$(grep -m1 '^title:' "$FILE" | sed 's/^title: //' | tr -d '"')
+            git config user.name  "Sport Spectator bot"
+            git config user.email "bot@thesportspectator.com"
+            git add src/content/articles
+            git commit -m "Draft: $(date -u +%Y-%m-%d)"
+            git push
+            echo "headline=$HEADLINE" >> "$GITHUB_OUTPUT"
+            echo "Committed $FILE"
+          else
+            echo "No draft produced; nothing to commit."
+          fi
+
+      - name: Text me
+        if: ${{ steps.commit.outputs.headline != '' && secrets.TWILIO_SID != '' }}
+        env:
+          TWILIO_SID:   ${{ secrets.TWILIO_SID }}
+          TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
+          TWILIO_FROM:  ${{ secrets.TWILIO_FROM }}
+          TWILIO_TO:    ${{ secrets.TWILIO_TO }}
+        run: |
+          curl -s -X POST "https://api.twilio.com/2010-04-01/Accounts/$TWILIO_SID/Messages.json" \
+            --data-urlencode "Body=New draft: ${{ steps.commit.outputs.headline }}" \
+            --data-urlencode "From=$TWILIO_FROM" \
+            --data-urlencode "To=$TWILIO_TO" \
+            -u "$TWILIO_SID:$TWILIO_TOKEN" || true
