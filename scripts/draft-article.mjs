@@ -42,31 +42,62 @@ contain nothing but a single JSON object. No preamble, no explanation, no markdo
 
 {"title":"...","dek":"...","section":"dolphins|hurricanes|inter-miami|heat|high-school-football|high-school-soccer|miami-soccer|gol-gala","tags":["..."],"slug":"kebab-case-slug","body":"markdown body, no H1"}`;
 
-const res = await fetch('https://api.anthropic.com/v1/messages', {
-  method: 'POST',
-  headers: {
-    'content-type': 'application/json',
-    'x-api-key': KEY,
-    'anthropic-version': '2023-06-01',
-  },
-  body: JSON.stringify({
-    model: 'claude-sonnet-5',
-    max_tokens: 8000,
-    system: SYSTEM,
-    tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-    messages: [{
-      role: 'user',
-      content: `Today is ${new Date().toDateString()}. Search for today's Miami sports news across our beats, `
-             + `pick the single story most worth a full piece, and write it.\n\n`
-             + `Do NOT repeat any of these recent headlines:\n${recent.map((h) => `- ${h}`).join('\n')}`,
-    }],
-  }),
+const body = (messages) => JSON.stringify({
+  model: 'claude-sonnet-5',
+  max_tokens: 8000,
+  system: SYSTEM,
+  tools: [{ type: 'web_search_20250305', name: 'web_search' }],
+  messages,
 });
 
-if (!res.ok) { console.error('API error', res.status, (await res.text()).slice(0, 800)); process.exit(0); }
+const call = async (messages) => {
+  const r = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      'x-api-key': KEY,
+      'anthropic-version': '2023-06-01',
+    },
+    body: body(messages),
+  });
+  if (!r.ok) throw new Error(`API ${r.status}: ${(await r.text()).slice(0, 500)}`);
+  return r.json();
+};
 
-const data = await res.json();
-const textBlocks = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text.trim());
+let messages = [{
+  role: 'user',
+  content: `Today is ${new Date().toDateString()}. Search for today's Miami sports news across our beats, `
+         + `pick the single story most worth a full piece, and write it.\n\n`
+         + `Do NOT repeat any of these recent headlines:\n${recent.map((h) => `- ${h}`).join('\n')}`,
+}];
+
+/**
+ * Long turns that use server-side tools come back with stop_reason
+ * "pause_turn". The turn isn't finished — you hand the content back and
+ * Claude picks up where it left off. Without this the run ends with
+ * search results and no article.
+ */
+let data;
+const allText = [];
+for (let attempt = 0; attempt < 6; attempt++) {
+  try {
+    data = await call(messages);
+  } catch (e) {
+    console.error(e.message);
+    process.exit(0);
+  }
+
+  for (const b of data.content || []) {
+    if (b.type === 'text' && b.text.trim()) allText.push(b.text.trim());
+  }
+
+  console.log(`turn ${attempt + 1}: stop_reason=${data.stop_reason}`);
+  if (data.stop_reason !== 'pause_turn') break;
+
+  messages = [...messages, { role: 'assistant', content: data.content }];
+}
+
+const textBlocks = allText;
 
 if (!textBlocks.length) {
   console.error('No text blocks returned. stop_reason:', data.stop_reason);
