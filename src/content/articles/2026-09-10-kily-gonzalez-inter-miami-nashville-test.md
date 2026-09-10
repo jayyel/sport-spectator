@@ -4,7 +4,7 @@ dek: "Inter Miami's new coach is unbeaten through two matches since replacing Gu
 section: inter-miami
 author: John Lasak
 date: 2026-09-10
-draft: true
+draft: false
 tags: ["Inter Miami", "Kily Gonzalez", "Lionel Messi", "Nashville SC", "MLS"]
 ---
 Inter Miami has not lost since Cristian "Kily" González took the bench, but "not lost" is doing a lot of work in that sentence. The Herons drew Atlanta United 2-2 at home on Sept. 5. They drew Chicago Fire 1-1 on the road Wednesday night. Two games, two results salvaged by second-half goals, zero wins. Saturday, at Nu Stadium, they get a chance to find out whether the calm has actually translated into results — against a Nashville SC team that has given them almost nothing to work with all year.
