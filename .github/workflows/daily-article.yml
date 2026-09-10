@@ -14,6 +14,15 @@ permissions:
 jobs:
   draft:
     runs-on: ubuntu-latest
+
+    # Secrets can't be read inside an `if:` condition, so they're lifted
+    # into env here where the condition can see them.
+    env:
+      TWILIO_SID:   ${{ secrets.TWILIO_SID }}
+      TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
+      TWILIO_FROM:  ${{ secrets.TWILIO_FROM }}
+      TWILIO_TO:    ${{ secrets.TWILIO_TO }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -24,7 +33,7 @@ jobs:
       - name: Generate draft
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          AUTO_PUBLISH: 'true'          # 'true' skips review and publishes
+          AUTO_PUBLISH: 'false'          # 'true' skips review and publishes
           BYLINE: 'John Lasak'
         run: node scripts/draft-article.mjs
 
@@ -45,13 +54,9 @@ jobs:
             echo "No draft produced; nothing to commit."
           fi
 
+      # Skips silently until Twilio secrets exist.
       - name: Text me
-        if: ${{ steps.commit.outputs.headline != '' && secrets.TWILIO_SID != '' }}
-        env:
-          TWILIO_SID:   ${{ secrets.TWILIO_SID }}
-          TWILIO_TOKEN: ${{ secrets.TWILIO_TOKEN }}
-          TWILIO_FROM:  ${{ secrets.TWILIO_FROM }}
-          TWILIO_TO:    ${{ secrets.TWILIO_TO }}
+        if: steps.commit.outputs.headline != '' && env.TWILIO_SID != ''
         run: |
           curl -s -X POST "https://api.twilio.com/2010-04-01/Accounts/$TWILIO_SID/Messages.json" \
             --data-urlencode "Body=New draft: ${{ steps.commit.outputs.headline }}" \
