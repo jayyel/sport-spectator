@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 Miami Sports Calendar — Sport Spectator</title>
+<meta name="description" content="Every Miami Dolphins, Hurricanes, Inter Miami, Heat, Marlins and Panthers game in 2026, month by month.">
+<link rel="canonical" href="https://thesportspectator.com/calendar/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0B0F1A; --ink-2:#10162A; --ink-3:#161D35;
+  --line:rgba(250,248,244,.13); --line-soft:rgba(250,248,244,.07);
+  --cream:#FAF8F4; --cream-70:rgba(250,248,244,.70);
+  --cream-45:rgba(250,248,244,.45); --cream-28:rgba(250,248,244,.28);
+  --blue:#3B6BD6; --azure:#1B8FE0; --cyan:#22D3EE;
+  --pink:#FF2E63; --coral:#FF4F2D; --orange:#FF7A29;
+  --mia:#00A3E0; --dol:#008E97; --can:#F47321;
+  --heat:#F9A01B; --pan:#C8102E; --imcf:#F7B5CD;
+  --spectrum:linear-gradient(90deg,var(--blue),var(--azure),var(--cyan),var(--pink),var(--coral),var(--orange));
+  --wrap:1340px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;background:var(--ink);color:var(--cream);
+  font-family:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 28px}
+.eyebrow{font-size:10.5px;font-weight:800;font-stretch:88%;letter-spacing:.20em;text-transform:uppercase;color:var(--orange)}
+
+/* ── ticker ───────────────────────────────── */
+.ticker{position:relative;background:#080B14;border-bottom:1px solid var(--line-soft);overflow:hidden}
+.ticker::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:var(--spectrum)}
+.ticker-inner{display:flex;align-items:center;height:36px}
+.ticker-flag{display:flex;align-items:center;gap:7px;flex:0 0 auto;padding:0 26px 0 28px;height:100%;
+  background:var(--pink);font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+  clip-path:polygon(0 0,100% 0,calc(100% - 12px) 100%,0 100%);z-index:2}
+.pulse{width:6px;height:6px;border-radius:50%;background:var(--cream);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+.ticker-track{overflow:hidden;flex:1;mask-image:linear-gradient(90deg,transparent,#000 26px,#000 94%,transparent)}
+.ticker-run{display:flex;width:max-content;animation:run 64s linear infinite}
+.ticker:hover .ticker-run{animation-play-state:paused}
+@keyframes run{to{transform:translateX(-50%)}}
+.ticker-item{display:flex;align-items:center;gap:10px;padding:0 22px;white-space:nowrap;font-size:12.5px;font-weight:500;color:var(--cream-70)}
+.ticker-item b{font-weight:700;color:var(--cream);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.tdot{width:5px;height:5px;border-radius:50%;flex:0 0 auto}
+
+/* ── masthead ─────────────────────────────── */
+.masthead{border-bottom:1px solid var(--line);background:rgba(11,15,26,.93);backdrop-filter:blur(10px);position:sticky;top:0;z-index:40}
+/* backdrop-filter makes .masthead a containing block, so the mobile
+   panel is positioned against it rather than the viewport. */
+.mast-inner{display:flex;align-items:center;gap:34px;height:70px}
+.logo{display:flex;align-items:center;gap:12px;flex:0 0 auto}
+.mark{width:32px;height:32px;border-radius:50%;flex:0 0 auto;position:relative;
+  background:conic-gradient(from 200deg,var(--blue),var(--azure),var(--cyan),var(--pink),var(--coral),var(--orange),var(--blue))}
+.mark::after{content:"";position:absolute;inset:10px;border-radius:50%;background:var(--ink)}
+.wordmark{font-size:18px;font-weight:800;font-stretch:105%;letter-spacing:.13em;text-transform:uppercase;line-height:1}
+.wordmark span{display:block;font-size:8.5px;font-weight:600;letter-spacing:.26em;color:var(--cream-45);margin-top:4px}
+nav{display:flex;align-items:center;gap:19px;font-size:12.5px;font-weight:600;color:var(--cream-70);flex:1;white-space:nowrap}
+nav>a,.has-sub>a{padding:4px 0;border-bottom:2px solid transparent;display:inline-block}
+nav>a:hover,nav>a[aria-current],.has-sub>a:hover{color:var(--cream);border-bottom-color:var(--coral)}
+.has-sub{position:relative}
+.caret{font-size:8px;margin-left:5px;vertical-align:1px;color:var(--cream-45)}
+.has-sub:hover .caret{color:var(--coral)}
+.sub{position:absolute;top:100%;left:-14px;margin-top:9px;min-width:150px;background:var(--ink-2);
+  border:1px solid var(--line);border-radius:3px;padding:5px 0;opacity:0;visibility:hidden;
+  transform:translateY(-4px);transition:opacity .13s,transform .13s;z-index:60;
+  box-shadow:0 14px 34px rgba(0,0,0,.5)}
+.sub::before{content:"";position:absolute;inset:0 0 auto;height:2px;background:var(--spectrum)}
+.has-sub:hover .sub,.has-sub:focus-within .sub{opacity:1;visibility:visible;transform:translateY(0)}
+.sub a{display:block;padding:9px 16px;font-size:12.5px;font-weight:600;color:var(--cream-70)}
+.sub a:hover{background:var(--ink-3);color:var(--cream)}
+.mast-right{display:flex;align-items:center;gap:14px;flex:0 0 auto}
+.clock{font-size:12px;font-weight:600;color:var(--cream-45)}
+.btn-press{font-size:12px;font-weight:700;letter-spacing:.06em;padding:8px 15px;border-radius:2px;border:1px solid var(--line)}
+.btn-press:hover{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.burger{display:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;
+  width:40px;height:40px;padding:0;margin-right:-6px;background:none;border:0;cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+.burger span{display:block;width:22px;height:2px;background:var(--cream);border-radius:2px;
+  transition:transform .2s ease,opacity .15s ease}
+.burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* ═══ ROW 1 — GAMES OF THE WEEK ═══ */
+.marquee{border-bottom:1px solid var(--line);padding:16px 0 18px;background:
+  radial-gradient(900px 200px at 20% 0%,rgba(255,79,45,.09),transparent 70%),
+  radial-gradient(900px 200px at 80% 0%,rgba(59,107,214,.09),transparent 70%)}
+.mq-head{display:flex;align-items:baseline;justify-content:space-between;gap:18px;margin-bottom:12px}
+.mq-head h1{font-size:13px;font-weight:800;letter-spacing:.20em;text-transform:uppercase;color:var(--orange);margin:0}
+.mq-note{font-size:11.5px;color:var(--cream-28);font-weight:500}
+.mq-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr)}
+.mq-list li{border-left:1px solid var(--line-soft);padding:0 26px}
+.mq-list li:first-child{border-left:0;padding-left:0}
+.mq-list li:last-child{padding-right:0}
+.mq-list a{display:grid;grid-template-columns:40px 1fr;gap:14px;align-items:start}
+.rank{font-size:38px;font-weight:900;line-height:.74;letter-spacing:-.05em;
+  -webkit-text-stroke:1.5px var(--rk);color:transparent}
+.mq-list li:nth-child(1){--rk:var(--orange)}
+.mq-list li:nth-child(2){--rk:var(--pink)}
+.mq-list li:nth-child(3){--rk:var(--azure)}
+.mq-line{display:flex;align-items:baseline;justify-content:space-between;gap:14px;margin-bottom:5px}
+.comp{font-size:9.5px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--rk);white-space:nowrap}
+.mq-when{font-size:11px;font-weight:600;color:var(--cream-45);white-space:nowrap}
+.mq-list h2{font-size:19px;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:0 0 5px}
+.mq-why{font-size:12.5px;line-height:1.4;color:var(--cream-45);margin:0}
+.mq-list a:hover h2{color:var(--rk)}
+
+/* ═══ ROW 2 — MIAMI SLATE ═══ */
+.slate{border-bottom:1px solid var(--line);padding:15px 0 17px}
+.slate-head{display:flex;align-items:baseline;gap:14px;margin-bottom:11px}
+.slate-head h2{font-size:13px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin:0}
+.slate-head .date{font-size:11.5px;font-weight:600;color:var(--cream-45)}
+.slate-head .sp{flex:1}
+.morelink{font-size:11.5px;font-weight:700;color:var(--cream-70);border-bottom:1px solid var(--coral);padding-bottom:1px;white-space:nowrap}
+.morelink:hover{color:var(--orange)}
+.rail-nav{display:flex;gap:6px}
+.rail-btn{width:26px;height:26px;border:1px solid var(--line);background:none;color:var(--cream-70);border-radius:2px;cursor:pointer;font-size:13px;line-height:1;padding:0}
+.rail-btn:hover{background:var(--ink-3);color:var(--cream)}
+
+.rail{display:flex;gap:10px;overflow-x:auto;scroll-behavior:smooth;padding-bottom:8px;scroll-snap-type:x proximity}
+.rail::-webkit-scrollbar{height:4px}
+.rail::-webkit-scrollbar-thumb{background:var(--ink-3);border-radius:9px}
+.rail::-webkit-scrollbar-track{background:transparent}
+
+.game{flex:0 0 232px;scroll-snap-align:start;background:var(--ink-2);border:1px solid var(--line-soft);
+  border-radius:3px;position:relative;padding:9px 12px 10px 14px;overflow:hidden}
+.game::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--accent,var(--blue))}
+.game:hover{border-color:var(--line);background:var(--ink-3)}
+.g-top{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px}
+.league{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--accent,var(--cream-45));display:flex;align-items:center;gap:5px;white-space:nowrap}
+.star{color:var(--orange);font-size:11px;line-height:1}
+.when{font-size:10.5px;font-weight:700;color:var(--cream-45);white-space:nowrap;letter-spacing:.03em}
+.live-chip{display:flex;align-items:center;gap:5px;font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--pink);white-space:nowrap}
+.live-chip .pulse{background:var(--pink);width:5px;height:5px}
+.t{display:flex;align-items:center;gap:8px;height:21px}
+.abbr{font-size:9.5px;font-weight:800;letter-spacing:.02em;width:28px;flex:0 0 auto}
+.t-name{font-size:13.5px;font-weight:700;flex:1;letter-spacing:-.008em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.t.away .t-name{font-weight:600;color:var(--cream-70)}
+.val{font-size:11px;font-weight:600;color:var(--cream-28);white-space:nowrap}
+.val.score{font-size:15px;font-weight:800;color:var(--cream);letter-spacing:-.02em}
+.val.score.dim{color:var(--cream-28);font-weight:700}
+.game.off{background:transparent;border-style:dashed;border-color:var(--line)}
+.cd{display:flex;align-items:baseline;gap:8px;height:42px;padding-top:4px}
+.cd b{font-size:26px;font-weight:900;letter-spacing:-.03em;line-height:1}
+.cd span{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--cream-45)}
+/* Miami Happy Hours banner — brand blue #58A5F7, brand pink #E8407F */
+:root{--mhh-blue:#58A5F7;--mhh-pink:#E8407F}
+.mhh{display:flex;align-items:center;gap:16px;margin-top:12px;padding:13px 18px;border-radius:3px;
+  position:relative;overflow:hidden;border:1px solid rgba(88,165,247,.30);
+  background:linear-gradient(100deg,rgba(88,165,247,.16),rgba(88,165,247,.05) 46%,rgba(232,64,127,.09))}
+.mhh::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:linear-gradient(180deg,var(--mhh-blue),var(--mhh-pink))}
+.mhh:hover{border-color:rgba(88,165,247,.55)}
+.mhh-pin{width:26px;height:26px;flex:0 0 auto;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);
+  background:var(--mhh-pink);position:relative}
+.mhh-pin::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--ink)}
+.mhh-copy{display:flex;flex-direction:column;gap:2px;line-height:1.15}
+.mhh-copy b{font-size:17px;font-weight:900;letter-spacing:-.02em;color:var(--mhh-blue)}
+.mhh-copy span{font-size:11.5px;font-weight:600;color:var(--cream-45)}
+.mhh-sp{flex:1}
+.mhh-note{font-size:12px;font-weight:500;color:var(--cream-45);white-space:nowrap}
+.mhh-cta{flex:0 0 auto;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;
+  padding:9px 16px;border-radius:20px;background:var(--mhh-pink);color:#fff;white-space:nowrap}
+.mhh:hover .mhh-cta{background:var(--cream);color:#0B0F1A}
+@media (max-width:900px){.mhh-note{display:none}}
+@media (max-width:560px){.mhh{flex-wrap:wrap;gap:12px}.mhh-sp{display:none}}
+
+/* ── body grid ────────────────────────────── */
+.main{display:grid;grid-template-columns:minmax(0,1fr) 336px;gap:52px;padding-block:40px 60px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:16px;padding-bottom:12px;border-bottom:2px solid var(--cream);margin-bottom:22px}
+.sec-title{font-size:24px;font-weight:900;letter-spacing:-.015em;margin:0}
+.sec-link{font-size:12px;font-weight:600;color:var(--cream-45)}
+.sec-link:hover{color:var(--cream)}
+.lead{display:grid;grid-template-columns:1.15fr 1fr;gap:26px;padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:6px;align-items:center}
+.photo{aspect-ratio:16/10;border-radius:2px;position:relative;overflow:hidden;border:1px solid var(--line-soft);
+  background:linear-gradient(135deg,var(--ink-3),var(--ink-2));display:grid;place-items:center}
+.photo:has(img)::after,.photo[style]::after{content:none}
+.photo::after{content:"photo";font-size:10px;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--cream-28)}
+.photo .corner{position:absolute;width:20px;height:20px;border:2px solid var(--cream);opacity:.55}
+.photo .c1{top:11px;left:11px;border-right:0;border-bottom:0}
+.photo .c2{bottom:11px;right:11px;border-left:0;border-top:0}
+.tag{display:inline-flex;align-items:center;gap:7px;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+.tag i{width:7px;height:7px;border-radius:50%;background:currentColor;font-style:normal}
+.lead h3{font-size:clamp(24px,2.6vw,32px);font-weight:900;line-height:1.06;letter-spacing:-.022em;margin:12px 0 11px}
+.lead p{font-size:14px;line-height:1.6;color:var(--cream-70);margin:0 0 14px;max-width:52ch}
+.byline{font-size:11px;font-weight:600;color:var(--cream-28);letter-spacing:.06em}
+.stories{list-style:none;margin:0;padding:0}
+.stories li{border-bottom:1px solid var(--line-soft)}
+.stories a{display:grid;grid-template-columns:64px 1fr auto;gap:18px;align-items:center;padding:17px 0}
+.stories a:hover h4{color:var(--orange)}
+.thumb{width:64px;height:64px;border-radius:2px;background:var(--ink-2);border:1px solid var(--line-soft);display:grid;place-items:center}
+.thumb b{font-size:8px;font-weight:700;letter-spacing:.16em;color:var(--cream-28)}
+.stories h4{font-size:16px;font-weight:700;line-height:1.24;letter-spacing:-.012em;margin:7px 0 0;max-width:58ch}
+.stamp{font-size:11px;font-weight:600;color:var(--cream-28);white-space:nowrap}
+
+/* ── sidebar ──────────────────────────────── */
+aside{display:flex;flex-direction:column;gap:34px}
+.card{border:1px solid var(--line);border-radius:3px;overflow:hidden}
+.card-head{padding:15px 16px;border-bottom:1px solid var(--line)}
+.card-head h3{font-size:16px;font-weight:900;letter-spacing:-.015em;margin:6px 0 0}
+.card-head h3 .by{font-size:12.5px;font-weight:600;color:var(--cream-45);letter-spacing:0}
+.card-body{padding:16px}
+.blurb{font-size:12.5px;line-height:1.55;color:var(--cream-70);margin:0;padding:15px 16px 0}
+.gg-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line-soft);margin-top:15px;border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft)}
+.gg-stats div{background:var(--ink);padding:11px 8px;text-align:center}
+.gg-stats b{display:block;font-size:17px;font-weight:900;letter-spacing:-.03em;color:var(--orange)}
+.gg-stats span{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--cream-45)}
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tab{flex:1;padding:11px 8px;background:none;border:0;border-bottom:2px solid transparent;color:var(--cream-45);
+  font:inherit;font-size:11.5px;font-weight:700;letter-spacing:.06em;cursor:pointer}
+.tab:hover{color:var(--cream)}
+.tab[aria-selected="true"]{color:var(--cream);border-bottom-color:var(--orange)}
+.panel[hidden]{display:none}
+:root{--gold:#E8B84B;--gold-dim:#8A6A24}
+#p-champs{padding-top:6px}
+.champ{display:grid;grid-template-columns:46px 1fr auto;gap:12px;align-items:center;
+  padding:11px 10px 11px 9px;margin-bottom:7px;border-radius:3px;position:relative;
+  background:linear-gradient(100deg,rgba(232,184,75,.11),rgba(232,184,75,.03) 62%,transparent);
+  border:1px solid rgba(232,184,75,.20)}
+.champ::before{content:"";position:absolute;inset:0 auto 0 0;width:2px;border-radius:3px 0 0 3px;
+  background:linear-gradient(180deg,var(--gold),var(--gold-dim))}
+.champ:last-child{margin-bottom:0}
+.year{font-size:18px;font-weight:900;letter-spacing:-.03em;color:var(--gold);font-variant-numeric:tabular-nums}
+.champ b{display:block;font-size:14px;font-weight:800;line-height:1.2;color:#F6E3B4;letter-spacing:-.005em}
+.champ .ru{display:block;font-size:11px;color:var(--cream-45);font-weight:500;margin-top:2px}
+.cup{font-size:13px;opacity:.85;line-height:1}
+.pr{list-style:none;margin:0;padding:0}
+.pr li{display:grid;grid-template-columns:22px 1fr auto;gap:11px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line-soft);font-size:13.5px}
+.pr li:last-child{border-bottom:0;padding-bottom:0}
+.pr li:first-child{padding-top:0}
+.pr .n{font-size:12px;font-weight:800;color:var(--cream-28)}
+.pr li:nth-child(-n+3) .n{color:var(--orange)}
+.pr b{font-weight:700}
+.pr .yr{font-size:11px;font-weight:700;color:var(--cream-45);letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.card-foot{display:block;padding:12px 16px;font-size:12px;font-weight:600;color:var(--cream-45);border-top:1px solid var(--line)}
+.card-foot:hover{color:var(--cream)}
+.news-blurb{font-size:12.5px;line-height:1.55;color:var(--cream-70);margin:0 0 14px}
+.news-form{display:flex;gap:7px}
+.news-form input{flex:1;min-width:0;background:var(--ink);border:1px solid var(--line);border-radius:2px;
+  padding:10px 11px;color:var(--cream);font:inherit;font-size:13px}
+.news-form input::placeholder{color:var(--cream-28)}
+.news-form input:focus{outline:none;border-color:var(--cyan)}
+.news-form button{flex:0 0 auto;background:var(--orange);color:#0B0F1A;border:0;border-radius:2px;
+  padding:10px 15px;font:inherit;font-size:11.5px;font-weight:800;letter-spacing:.06em;cursor:pointer}
+.news-form button:hover{background:var(--cream)}
+.news-form button:disabled{opacity:.5;cursor:default}
+.news-msg{font-size:11.5px;font-weight:600;margin:9px 0 0;min-height:1px}
+.news-msg.ok{color:#4ADE80}.news-msg.err{color:var(--pink)}
+.news-fine{font-size:10.5px;color:var(--cream-28);margin:10px 0 0}
+/* Pilates & Lattes Club — brand lavender/pink held back to a wash */
+.ad{display:block;border-radius:3px;padding:24px 20px 20px;position:relative;overflow:hidden;
+  background:linear-gradient(158deg,rgba(217,199,232,.13),rgba(231,202,223,.07) 52%,rgba(244,208,216,.10));
+  border:1px solid rgba(217,199,232,.20)}
+.ad:hover{border-color:rgba(217,199,232,.38)}
+.ad::before{content:"";position:absolute;inset:0 0 auto;height:3px;
+  background:linear-gradient(90deg,#C4ABDD,#EFC2D2)}
+.ad .adlabel{position:absolute;top:12px;right:14px;font-size:8px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--cream-28)}
+.ad-eyebrow{font-size:9.5px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:#C9AEDC}
+.ad h4{font-size:30px;font-weight:400;font-style:italic;line-height:.98;letter-spacing:-.01em;margin:8px 0 11px;
+  font-family:Georgia,'Times New Roman',serif;color:#E6D6F0}
+.ad h4 em{font-style:italic;display:block;color:#F0C3D2}
+.ad p{font-size:12.5px;line-height:1.5;color:var(--cream-70);margin:0 0 16px}
+.ad .cta{display:inline-block;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;
+  padding:9px 15px;background:rgba(240,195,210,.16);border:1px solid rgba(240,195,210,.34);
+  color:#F0C3D2;border-radius:2px}
+.ad:hover .cta{background:#F0C3D2;color:#1F5A38;border-color:#F0C3D2}
+
+/* ── press ────────────────────────────────── */
+.press{border-top:1px solid var(--line);background:var(--ink-2)}
+.press-inner{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:44px;padding-block:40px}
+.press h3{font-size:20px;font-weight:900;letter-spacing:-.02em;margin:8px 0 10px}
+.press p{font-size:13px;line-height:1.6;color:var(--cream-70);margin:0;max-width:46ch}
+.social{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-direction:column;gap:2px}
+.social a{display:grid;grid-template-columns:22px 74px 1fr;align-items:center;gap:11px;
+  padding:9px 10px 9px 0;border-radius:2px;color:var(--cream-70)}
+.social a:hover{color:var(--cream)}
+.social svg{width:18px;height:18px;justify-self:center;color:var(--cream-45)}
+.social a:hover svg{color:var(--coral)}
+.social span{font-size:12px;font-weight:700;letter-spacing:.02em}
+.social b{font-size:12px;font-weight:500;color:var(--cream-28);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.social a:hover b{color:var(--cream-45)}
+.press a.mail{font-size:14px;font-weight:700;border-bottom:1px solid var(--coral);padding-bottom:2px}
+footer{border-top:1px solid var(--line-soft);padding:26px 0 40px;font-size:11.5px;color:var(--cream-28);display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer .spec{height:2px;width:100%;background:var(--spectrum);opacity:.75;margin-bottom:26px}
+
+@media (max-width:1080px){
+  .main{grid-template-columns:1fr;gap:44px}
+  .mq-list{grid-template-columns:1fr}
+  .mq-list li{border-left:0;border-top:1px solid var(--line-soft);padding:12px 0}
+  .mq-list li:first-child{border-top:0;padding-top:0}
+  .press-inner{grid-template-columns:1fr 1fr;gap:28px}
+}
+
+/* ── Mobile navigation ─────────────────────────────────── */
+@media (max-width:900px){
+  .mast-inner{height:62px;gap:14px}
+  .burger{display:flex}
+  .clock,.btn-press{display:none}
+  .mast-right{margin-left:auto}
+
+  nav{
+    position:absolute;top:100%;left:0;right:0;z-index:55;
+    max-height:calc(100vh - 62px);max-height:calc(100dvh - 62px);
+    display:none;flex-direction:column;align-items:stretch;gap:0;
+    background:var(--ink);border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    padding:0 0 8px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+    box-shadow:0 20px 48px rgba(0,0,0,.6);
+  }
+  nav[data-open="true"]{display:flex}
+  nav::before{content:"";display:block;height:2px;background:var(--spectrum);flex:0 0 auto}
+  nav>a,.has-sub>a{
+    display:block;padding:15px 20px;font-size:16px;font-weight:700;
+    border-bottom:1px solid var(--line-soft);color:var(--cream)
+  }
+  nav>a:hover,.has-sub>a:hover{border-bottom-color:var(--line-soft)}
+  .caret{display:none}
+  /* submenus sit open and indented instead of hovering */
+  .sub{
+    position:static;opacity:1;visibility:visible;transform:none;margin:0;
+    background:rgba(0,0,0,.28);border:0;border-radius:0;box-shadow:none;padding:0;min-width:0
+  }
+  .sub::before{display:none}
+  .sub a{padding:13px 20px 13px 38px;font-size:14.5px;border-bottom:1px solid var(--line-soft);color:var(--cream-70)}
+}
+
+@media (max-width:720px){
+  .wrap{padding:0 18px}
+  .ticker-flag{padding:0 20px 0 18px;font-size:10px}
+  .wordmark{font-size:16px;letter-spacing:.10em}
+  .wordmark span{font-size:8px;letter-spacing:.20em}
+
+  .mq-head{flex-wrap:wrap;gap:4px}
+  .mq-note{font-size:11px}
+  .mq-list a{grid-template-columns:32px 1fr;gap:11px}
+  .rank{font-size:32px}
+  .mq-list h2{font-size:17px}
+
+  /* stack the slate header, drop the arrows, let cards run to the edge */
+  .slate-head{flex-wrap:wrap;gap:4px 12px}
+  .slate-head h2{flex:0 0 100%}
+  .slate-head .sp{display:none}
+  .rail-nav{display:none}
+  .rail{margin:0 -18px;padding:0 18px 8px;scroll-padding-left:18px}
+  .game{flex-basis:216px}
+
+  .lead{grid-template-columns:1fr}
+  .stories a{grid-template-columns:52px 1fr;row-gap:6px}
+  .stamp{grid-column:2;justify-self:start}
+  .thumb{width:52px;height:52px}
+  .main{padding-block:32px 48px;gap:36px}
+  .press-inner{grid-template-columns:1fr;gap:26px;padding-block:32px}
+  footer{flex-direction:column;gap:8px}
+}
+
+@media (max-width:560px){
+  .mhh{flex-wrap:wrap;gap:12px;padding:14px 16px}
+  .mhh-sp,.mhh-note{display:none}
+  .mhh-cta{width:100%;text-align:center}
+  .sec-title{font-size:21px}
+}
+
+@media (prefers-reduced-motion:reduce){.ticker-run{animation:none}.pulse{animation:none}.rail{scroll-behavior:auto}}
+</style>
+<style>
+/* ── Calendar ─────────────────────────────── */
+.calhead{padding:34px 0 22px;border-bottom:1px solid var(--line)}
+.calhead h1{font-size:clamp(30px,4.6vw,46px);font-weight:900;letter-spacing:-.025em;line-height:1;margin:10px 0 0}
+.calhead p{font-size:13.5px;color:var(--cream-45);margin:12px 0 0;max-width:60ch;line-height:1.55}
+
+.calbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:18px 0}
+.mnav{display:flex;align-items:center;gap:8px}
+.mbtn{width:34px;height:34px;border:1px solid var(--line);background:none;color:var(--cream);
+  border-radius:2px;cursor:pointer;font-size:15px;line-height:1;padding:0}
+.mbtn:hover{background:var(--ink-3)}
+.mbtn[disabled]{opacity:.3;cursor:default}
+#monthLabel{font-size:20px;font-weight:900;letter-spacing:-.02em;min-width:190px}
+.calbar .sp{flex:1}
+.todaybtn{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  padding:8px 14px;border-radius:20px;border:1px solid var(--line);background:none;color:var(--cream-70);cursor:pointer}
+.todaybtn:hover{color:var(--cream);border-color:var(--cream-45)}
+.tfilters{display:flex;gap:6px;flex-wrap:wrap}
+.tchip{font-size:10.5px;font-weight:700;letter-spacing:.04em;padding:5px 11px;border-radius:20px;
+  border:1px solid var(--line);color:var(--cream-45);background:none;cursor:pointer;display:flex;align-items:center;gap:6px}
+.tchip i{width:7px;height:7px;border-radius:50%;background:var(--tc,var(--cream-45));font-style:normal}
+.tchip:hover{color:var(--cream);border-color:var(--cream-45)}
+.tchip[data-on="true"]{background:var(--cream);color:var(--ink);border-color:var(--cream)}
+.tchip[data-on="true"] i{background:var(--tc)}
+
+.grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line-soft);
+  border:1px solid var(--line-soft);border-radius:3px;overflow:hidden;margin-bottom:40px}
+.dow{background:var(--ink-2);padding:9px 8px;font-size:9.5px;font-weight:800;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--cream-28);text-align:center}
+.cell{background:var(--ink);min-height:112px;padding:7px 7px 9px;position:relative}
+.cell.pad{background:#080B14}
+.cell.today{background:var(--ink-2)}
+.cell.today .dnum{background:var(--coral);color:var(--ink);border-radius:20px;padding:1px 7px}
+.dnum{font-size:11px;font-weight:800;color:var(--cream-45);display:inline-block;margin-bottom:6px}
+.ev{display:block;border-left:2px solid var(--ac);padding:4px 5px 5px 7px;margin-bottom:4px;
+  background:var(--ink-2);border-radius:0 2px 2px 0}
+.ev:hover{background:var(--ink-3)}
+.ev b{display:block;font-size:11px;font-weight:700;line-height:1.2;letter-spacing:-.004em}
+.ev span{display:block;font-size:9.5px;font-weight:600;color:var(--cream-28);margin-top:2px}
+.ev.done b{color:var(--cream-45)}
+
+.calstate{padding:60px 0;text-align:center;color:var(--cream-45);font-size:14px}
+.callist{display:none}
+.dayrow{display:grid;grid-template-columns:56px 1fr;gap:14px;padding:14px 0;border-bottom:1px solid var(--line-soft)}
+.dayrow .dd{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--cream-45);padding-top:3px}
+.dayrow .dd b{display:block;font-size:21px;font-weight:900;letter-spacing:-.03em;color:var(--cream);margin-top:2px}
+.dayrow.today .dd b{color:var(--coral)}
+
+@media (max-width:820px){
+  .grid{display:none}
+  .callist{display:block;margin-bottom:40px}
+  #monthLabel{min-width:0;font-size:18px}
+}
+</style>
+</head>
+<body>
+<!-- ═══ TICKER ═══ -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <div class="ticker-flag"><span class="pulse"></span>Live wire</div>
+    <div class="ticker-track">
+      <div class="ticker-run" id="run">
+        <span class="ticker-item"><i class="tdot" style="background:var(--dol)"></i><b>Dolphins</b> Tyreek Hill full participant in Monday practice, no injury designation expected for Week 1</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--can)"></i><b>Canes</b> Miami opens the week No. 12 in the AP poll after the road win in Atlanta</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--mia)"></i><b>Marlins</b> Eury Pérez strikes out nine over six innings, lowers ERA to 3.04</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--imcf)"></i><b>Inter Miami</b> Messi listed available for tonight's derby after missing the international window</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--cyan)"></i><b>High School</b> Columbus opens the season ranked No. 3 in the state after a 34-10 win over Central</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--pan)"></i><b>Panthers</b> Training camp roster released, first on-ice session set for Sept 18</span>
+        <span class="ticker-item"><i class="tdot" style="background:var(--heat)"></i><b>Heat</b> Miami finalizes two-way deal ahead of media day</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MASTHEAD ═══ -->
+<header class="masthead">
+  <div class="wrap mast-inner">
+    <a class="logo" href="/">
+      <span class="mark"></span>
+      <span class="wordmark">Sport Spectator<span>Miami sports, covered</span></span>
+    </a>
+    <nav id="nav">
+      <a href="/">Home</a>
+      <a href="/calendar/" aria-current="page">Calendar</a>
+      <a href="/section/hurricanes/">Hurricanes</a>
+      <a href="/section/inter-miami/">Inter Miami</a>
+      <a href="/section/dolphins/">Dolphins</a>
+      <a href="/section/heat/">Heat</a>
+      <div class="has-sub">
+        <a href="/section/high-school-football/" aria-haspopup="true" aria-expanded="false">High School<span class="caret">&#9662;</span></a>
+        <div class="sub">
+          <a href="/section/high-school-football/">Football</a>
+          <a href="/section/high-school-soccer/">Soccer</a>
+        </div>
+      </div>
+      <a href="/section/miami-soccer/">Miami Soccer</a>
+    </nav>
+    <div class="mast-right">
+      <span class="clock" id="clock"></span>
+      <a class="btn-press" href="/#press">Press &amp; media</a>
+      <button class="burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="calhead">
+    <span class="eyebrow">2026 season</span>
+    <h1>Miami sports calendar</h1>
+    <p>Every Dolphins, Hurricanes, Inter Miami, Heat, Marlins and Panthers fixture in 2026. Results fill in as games are played.</p>
+  </div>
+
+  <div class="calbar">
+    <div class="mnav">
+      <button class="mbtn" id="prevM" aria-label="Previous month">&lsaquo;</button>
+      <span id="monthLabel">—</span>
+      <button class="mbtn" id="nextM" aria-label="Next month">&rsaquo;</button>
+    </div>
+    <button class="todaybtn" id="todayBtn">Today</button>
+    <span class="sp"></span>
+    <div class="tfilters" id="tfilters"></div>
+  </div>
+
+  <div id="calState" class="calstate">Loading the 2026 schedule…</div>
+  <div class="grid" id="grid" hidden></div>
+  <div class="callist" id="list" hidden></div>
+</div>
+
+<script>
+const API = '';
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+const TEAMS = {
+  dolphins:{label:'Dolphins',c:'dol'}, hurricanes:{label:'Hurricanes',c:'can'},
+  intermiami:{label:'Inter Miami',c:'imcf'}, heat:{label:'Heat',c:'heat'},
+  marlins:{label:'Marlins',c:'mia'}, panthers:{label:'Panthers',c:'pan'}
+};
+
+let byMonth = {}, active = new Set(Object.keys(TEAMS));
+const today = new Date();
+let cursor = new Date(2026, today.getFullYear() === 2026 ? today.getMonth() : 0, 1);
+
+/* ── Live wire (shared with the homepage) ─────────────── */
+const run = document.getElementById('run');
+run.innerHTML += run.innerHTML;
+fetch(API + '/api/wire').then(r => r.json()).then(({items}) => {
+  if (!items || !items.length) return;
+  run.innerHTML = items.map(i => `
+    <a class="ticker-item" href="${esc(i.link)}" target="_blank" rel="noopener">
+      <i class="tdot" style="background:var(--${esc(i.accent)})"></i>
+      <b>${esc(i.tag)}</b>${esc(i.headline)}
+    </a>`).join('');
+  run.innerHTML += run.innerHTML;
+}).catch(()=>{});
+
+/* ── Team filter chips ────────────────────────────────── */
+document.getElementById('tfilters').innerHTML = Object.entries(TEAMS).map(([k,t]) =>
+  `<button class="tchip" data-team="${k}" data-on="true" style="--tc:var(--${t.c})"><i></i>${t.label}</button>`).join('');
+
+document.querySelectorAll('.tchip').forEach(c => c.onclick = () => {
+  const k = c.dataset.team;
+  if (active.has(k)) { active.delete(k); c.dataset.on = 'false'; }
+  else { active.add(k); c.dataset.on = 'true'; }
+  render();
+});
+
+/* ── Data ─────────────────────────────────────────────── */
+fetch(API + '/api/calendar').then(r => r.json()).then(d => {
+  byMonth = d.byMonth || {};
+  const total = Object.values(byMonth).reduce((n, a) => n + a.length, 0);
+  if (!total) {
+    document.getElementById('calState').textContent =
+      'No schedule data yet. The calendar refreshes daily at 5am ET.';
+    return;
+  }
+  document.getElementById('calState').hidden = true;
+  document.getElementById('grid').hidden = false;
+  document.getElementById('list').hidden = false;
+  render();
+}).catch(() => {
+  document.getElementById('calState').textContent = 'Could not load the schedule.';
+});
+
+/* ── Render ───────────────────────────────────────────── */
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const DOW = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const iso = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+
+function gamesOn(day) {
+  const key = day.slice(0, 7);
+  return (byMonth[key] || []).filter(g => g.day === day && active.has(g.teamKey));
+}
+
+function eventHTML(g) {
+  const opp = g.home.isMine ? g.away : g.home;
+  const prefix = g.home.isMine ? 'vs' : 'at';
+  const done = g.state === 'post';
+  const time = done
+    ? `${g.away.score}-${g.home.score} F`
+    : new Date(g.start).toLocaleString('en-US',{hour:'numeric',minute:'2-digit',timeZone:'America/New_York'}).replace(' ','').toLowerCase();
+  return `<span class="ev${done ? ' done' : ''}" style="--ac:var(--${esc(g.accent)})">
+    <b>${esc(prefix)} ${esc(opp.abbr || opp.name)}</b>
+    <span>${esc(time)}${g.network ? ' · ' + esc(g.network) : ''}</span>
+  </span>`;
+}
+
+function render() {
+  const y = cursor.getFullYear(), m = cursor.getMonth();
+  document.getElementById('monthLabel').textContent = `${MONTHS[m]} ${y}`;
+  document.getElementById('prevM').disabled = (m === 0);
+  document.getElementById('nextM').disabled = (m === 11);
+
+  const first = new Date(y, m, 1), lead = first.getDay();
+  const days = new Date(y, m + 1, 0).getDate();
+  const todayISO = iso(today);
+
+  let cells = DOW.map(d => `<div class="dow">${d}</div>`).join('');
+  for (let i = 0; i < lead; i++) cells += '<div class="cell pad"></div>';
+  for (let d = 1; d <= days; d++) {
+    const day = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const evs = gamesOn(day);
+    cells += `<div class="cell${day === todayISO ? ' today' : ''}">
+      <span class="dnum">${d}</span>${evs.map(eventHTML).join('')}</div>`;
+  }
+  const trail = (7 - ((lead + days) % 7)) % 7;
+  for (let i = 0; i < trail; i++) cells += '<div class="cell pad"></div>';
+  document.getElementById('grid').innerHTML = cells;
+
+  // Mobile: a plain list of days that actually have games
+  let rows = '';
+  for (let d = 1; d <= days; d++) {
+    const day = `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const evs = gamesOn(day);
+    if (!evs.length) continue;
+    const dt = new Date(y, m, d);
+    rows += `<div class="dayrow${day === todayISO ? ' today' : ''}">
+      <span class="dd">${DOW[dt.getDay()]}<b>${d}</b></span>
+      <span>${evs.map(eventHTML).join('')}</span></div>`;
+  }
+  document.getElementById('list').innerHTML = rows || '<p class="calstate">No games this month.</p>';
+}
+
+document.getElementById('prevM').onclick = () => { cursor.setMonth(cursor.getMonth()-1); render(); };
+document.getElementById('nextM').onclick = () => { cursor.setMonth(cursor.getMonth()+1); render(); };
+document.getElementById('todayBtn').onclick = () => {
+  cursor = new Date(2026, today.getFullYear() === 2026 ? today.getMonth() : 0, 1); render();
+};
+
+/* ── Menu + clock ─────────────────────────────────────── */
+const burger = document.getElementById('burger'), navEl = document.getElementById('nav');
+function setMenu(open){
+  navEl.dataset.open = open ? 'true' : 'false';
+  burger.setAttribute('aria-expanded', String(open));
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+burger.onclick = () => setMenu(navEl.dataset.open !== 'true');
+navEl.addEventListener('click', e => { if (e.target.tagName === 'A') setMenu(false); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') setMenu(false); });
+
+function tick(){
+  const s = new Date().toLocaleString('en-US',{weekday:'short',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZone:'America/New_York'});
+  document.getElementById('clock').textContent = s.replace(',','').replace(' at ',' · ');
+}
+tick(); setInterval(tick, 30000);
+</script>
+</body>
+</html>
