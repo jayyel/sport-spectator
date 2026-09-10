@@ -1,7 +1,9 @@
 /**
  * Daily article draft.
  * Claude searches the day's Miami sports news, picks one story, and writes it.
- * Writes markdown with draft: true unless AUTO_PUBLISH=true.
+ *
+ * Structure comes from a tool schema rather than a "please return JSON"
+ * instruction — the model reliably ignores the latter and writes prose.
  */
 import { writeFileSync, readdirSync, readFileSync } from 'node:fs';
 
@@ -11,6 +13,11 @@ const AUTO_PUBLISH = process.env.AUTO_PUBLISH === 'true';
 const BYLINE = process.env.BYLINE || 'Sport Spectator Staff';
 
 if (!KEY) { console.error('ANTHROPIC_API_KEY missing'); process.exit(0); }
+
+const SECTIONS = [
+  'dolphins', 'hurricanes', 'inter-miami', 'heat',
+  'high-school-football', 'high-school-soccer', 'miami-soccer', 'gol-gala',
+];
 
 const recent = readdirSync(DIR)
   .filter((f) => f.endsWith('.md'))
@@ -36,19 +43,25 @@ Hard rules:
 - Do not reproduce article structure or phrasing from your sources.
 - No betting odds, spreads, or gambling references of any kind.
 
-OUTPUT FORMAT — this matters:
-Search as much as you need. When you are finished searching, your FINAL message must
-contain nothing but a single JSON object. No preamble, no explanation, no markdown fences.
+Search as much as you need. Then call the submit_article tool with the finished piece.
+Do not write the article as a normal message — it only counts if it goes through the tool.`;
 
-{"title":"...","dek":"...","section":"dolphins|hurricanes|inter-miami|heat|high-school-football|high-school-soccer|miami-soccer|gol-gala","tags":["..."],"slug":"kebab-case-slug","body":"markdown body, no H1"}`;
-
-const body = (messages) => JSON.stringify({
-  model: 'claude-sonnet-5',
-  max_tokens: 8000,
-  system: SYSTEM,
-  tools: [{ type: 'web_search_20250305', name: 'web_search' }],
-  messages,
-});
+const SUBMIT_TOOL = {
+  name: 'submit_article',
+  description: 'Submit the finished article for publication. Call this exactly once, after researching.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      title:   { type: 'string', description: 'Headline. Specific, not a teaser. No clickbait.' },
+      dek:     { type: 'string', description: 'One or two sentences under the headline.' },
+      section: { type: 'string', enum: SECTIONS, description: 'Which section this belongs in.' },
+      slug:    { type: 'string', description: 'kebab-case URL slug, under 60 characters.' },
+      tags:    { type: 'array', items: { type: 'string' }, description: '3-5 tags.' },
+      body:    { type: 'string', description: 'Full article in markdown. No H1 — the title is separate. Use ## for subheads.' },
+    },
+    required: ['title', 'dek', 'section', 'slug', 'body'],
+  },
+};
 
 const call = async (messages) => {
   const r = await fetch('https://api.anthropic.com/v1/messages', {
@@ -58,7 +71,13 @@ const call = async (messages) => {
       'x-api-key': KEY,
       'anthropic-version': '2023-06-01',
     },
-    body: body(messages),
+    body: JSON.stringify({
+      model: 'claude-sonnet-5',
+      max_tokens: 8000,
+      system: SYSTEM,
+      tools: [{ type: 'web_search_20250305', name: 'web_search' }, SUBMIT_TOOL],
+      messages,
+    }),
   });
   if (!r.ok) throw new Error(`API ${r.status}: ${(await r.text()).slice(0, 500)}`);
   return r.json();
@@ -67,88 +86,68 @@ const call = async (messages) => {
 let messages = [{
   role: 'user',
   content: `Today is ${new Date().toDateString()}. Search for today's Miami sports news across our beats, `
-         + `pick the single story most worth a full piece, and write it.\n\n`
+         + `pick the single story most worth a full piece, write it, and submit it with the tool.\n\n`
          + `Do NOT repeat any of these recent headlines:\n${recent.map((h) => `- ${h}`).join('\n')}`,
 }];
 
-/**
- * Long turns that use server-side tools come back with stop_reason
- * "pause_turn". The turn isn't finished — you hand the content back and
- * Claude picks up where it left off. Without this the run ends with
- * search results and no article.
- */
-let data;
-const allText = [];
-for (let attempt = 0; attempt < 6; attempt++) {
-  try {
-    data = await call(messages);
-  } catch (e) {
-    console.error(e.message);
-    process.exit(0);
-  }
+let article = null;
+const strayText = [];
+
+for (let turn = 1; turn <= 6 && !article; turn++) {
+  let data;
+  try { data = await call(messages); }
+  catch (e) { console.error(e.message); process.exit(0); }
 
   for (const b of data.content || []) {
-    if (b.type === 'text' && b.text.trim()) allText.push(b.text.trim());
+    if (b.type === 'tool_use' && b.name === 'submit_article') article = b.input;
+    if (b.type === 'text' && b.text.trim()) strayText.push(b.text.trim());
   }
 
-  console.log(`turn ${attempt + 1}: stop_reason=${data.stop_reason}`);
-  if (data.stop_reason !== 'pause_turn') break;
+  console.log(`turn ${turn}: stop_reason=${data.stop_reason}${article ? ' — article submitted' : ''}`);
+  if (article) break;
 
   messages = [...messages, { role: 'assistant', content: data.content }];
-}
 
-const textBlocks = allText;
+  // pause_turn means the turn is unfinished; hand it back and let it resume.
+  if (data.stop_reason === 'pause_turn') continue;
 
-if (!textBlocks.length) {
-  console.error('No text blocks returned. stop_reason:', data.stop_reason);
-  process.exit(0);
-}
-
-/**
- * With web search on, Claude narrates between tool calls, so earlier text
- * blocks are commentary. The JSON is in the last one. Fall back to slicing
- * the outermost braces if the block still has stray text around it.
- */
-function extractJSON(blocks) {
-  for (const raw of [...blocks].reverse()) {
-    const cleaned = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
-    try { return JSON.parse(cleaned); } catch {}
-    const start = cleaned.indexOf('{');
-    const end = cleaned.lastIndexOf('}');
-    if (start !== -1 && end > start) {
-      try { return JSON.parse(cleaned.slice(start, end + 1)); } catch {}
-    }
+  // It stopped without calling the tool. Ask once, plainly.
+  if (data.stop_reason === 'end_turn') {
+    messages = [...messages, {
+      role: 'user',
+      content: 'Now call the submit_article tool with that piece. Do not reply with a message.',
+    }];
   }
-  return null;
 }
 
-const a = extractJSON(textBlocks);
-
-if (!a || !a.title || !a.body || !a.section) {
-  console.error('Could not parse model output. stop_reason:', data.stop_reason);
-  console.error('--- last text block (first 1500 chars) ---');
-  console.error(textBlocks[textBlocks.length - 1].slice(0, 1500));
+if (!article) {
+  console.error('No article submitted after 6 turns.');
+  if (strayText.length) {
+    console.error('--- last message (first 1200 chars) ---');
+    console.error(strayText[strayText.length - 1].slice(0, 1200));
+  }
   process.exit(0);
 }
 
 const date = new Date().toISOString().slice(0, 10);
-const slug = a.slug || a.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
+const slug = (article.slug || article.title)
+  .toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60);
 const esc = (s) => String(s).replace(/"/g, '\\"');
 
 const front = [
   '---',
-  `title: "${esc(a.title)}"`,
-  `dek: "${esc(a.dek || '')}"`,
-  `section: ${a.section}`,
+  `title: "${esc(article.title)}"`,
+  `dek: "${esc(article.dek || '')}"`,
+  `section: ${article.section}`,
   `author: ${BYLINE}`,
   `date: ${date}`,
   `draft: ${AUTO_PUBLISH ? 'false' : 'true'}`,
-  `tags: [${(a.tags || []).map((t) => `"${esc(t)}"`).join(', ')}]`,
+  `tags: [${(article.tags || []).map((t) => `"${esc(t)}"`).join(', ')}]`,
   '---',
   '',
 ].join('\n');
 
 const file = `${DIR}/${date}-${slug}.md`;
-writeFileSync(file, front + a.body.trim() + '\n');
+writeFileSync(file, front + article.body.trim() + '\n');
 console.log('Wrote', file);
-console.log('Headline:', a.title);
+console.log('Headline:', article.title);
