@@ -4,7 +4,7 @@ dek: "Miami gutted its bench to land Giannis Antetokounmpo. Now it's hard-capped
 section: heat
 author: John Lasak
 date: 2026-09-10
-draft: true
+draft: false
 tags: ["Miami Heat", "Giannis Antetokounmpo", "Klay Thompson", "NBA offseason", "salary cap"]
 ---
 The Miami Heat have 14 players under contract, one open roster spot, and almost no financial room to fill it. That's the state of the team three weeks before training camp opens — a direct consequence of the trade that reshaped the franchise this summer.
