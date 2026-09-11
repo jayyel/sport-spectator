@@ -80,12 +80,29 @@ const json = (data, maxAge = 60) =>
 /* Slate — ESPN scoreboards                                            */
 /* ------------------------------------------------------------------ */
 
-const yyyymmdd = (d) => d.toISOString().slice(0, 10).replace(/-/g, '');
+/**
+ * ESPN timestamps are UTC. A 8pm ET kickoff is the next calendar day in
+ * UTC, so slicing the ISO string puts games on the wrong date and drops
+ * tonight's games out of a UTC-based range. Everything user-facing is
+ * therefore computed in America/New_York.
+ */
+const ET = 'America/New_York';
+const etDay = (input) =>
+  new Date(input).toLocaleDateString('en-CA', { timeZone: ET });   // YYYY-MM-DD
+const etToday = () => etDay(new Date());
+const compact = (ymd) => ymd.replace(/-/g, '');
+const shiftDays = (ymd, n) => {
+  const d = new Date(`${ymd}T12:00:00Z`);
+  d.setUTCDate(d.getUTCDate() + n);
+  return d.toISOString().slice(0, 10);
+};
 
 function urlsFor(team) {
   const base = `https://site.api.espn.com/apis/site/v2/sports/${team.path}/scoreboard`;
-  const from = yyyymmdd(new Date());
-  const to = yyyymmdd(new Date(Date.now() + 6 * 864e5));
+  // One day of padding on the front so a game that is tonight in Miami but
+  // tomorrow in UTC still lands inside the window. Trimmed again below.
+  const from = compact(shiftDays(etToday(), -1));
+  const to = compact(shiftDays(etToday(), 6));
   return [
     `${base}?dates=${from}-${to}&limit=100`,  // preferred: whole week
     base,                                      // fallback: today only
@@ -148,6 +165,7 @@ function parseEvent(ev, team) {
     leagueLabel: { nfl:'NFL', ncaaf:'NCAA', mlb:'MLB', nba:'NBA', nhl:'NHL', mls:'MLS' }[team.league],
     accent: team.accent,
     start: ev.date,
+    day: etDay(ev.date),
     state: status.state,                 // pre | in | post
     statusDetail: status.shortDetail || '',
     network: comp.broadcasts?.[0]?.names?.[0] || '',
@@ -170,6 +188,10 @@ async function buildSlate(env) {
     diagnostics[keys[i]] = { found: r.games.length, sawEvents: r.sawEvents };
     if (r.error) errors[keys[i]] = r.error;
   });
+
+  // Padding day removed here: keep today onward in ET, plus anything still live.
+  const todayET = etToday();
+  games = games.filter((g) => g.day >= todayET || g.state === 'in');
 
   games.sort((a, b) => {
     if (a.state === 'in' && b.state !== 'in') return -1;
@@ -379,7 +401,7 @@ async function fetchSeason(key, team, season, env) {
       accent: team.accent,
       leagueLabel: { nfl:'NFL', ncaaf:'NCAA', mlb:'MLB', nba:'NBA', nhl:'NHL', mls:'MLS' }[team.league],
       start: ev.date,
-      day: (ev.date || '').slice(0, 10),
+      day: etDay(ev.date),
       state: status.state || 'pre',
       statusDetail: status.shortDetail || '',
       network: comp.broadcasts?.[0]?.media?.shortName || comp.broadcasts?.[0]?.names?.[0] || '',
