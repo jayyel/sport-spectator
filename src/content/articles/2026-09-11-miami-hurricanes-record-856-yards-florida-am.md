@@ -4,7 +4,7 @@ dek: "The Hurricanes put up 856 yards and 77 points on Florida A&M, but the stor
 section: hurricanes
 author: John Lasak
 date: 2026-09-11
-draft: true
+draft: false
 tags: ["Miami Hurricanes", "Darian Mensah", "Luke Nickel", "Mario Cristobal", "college football"]
 ---
 No. 7 Miami beat Florida A&M 77-7 on Thursday night at Hard Rock Stadium, and by the time it ended, the box score looked like a typo.
