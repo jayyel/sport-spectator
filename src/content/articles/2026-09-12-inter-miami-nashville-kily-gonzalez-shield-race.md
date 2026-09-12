@@ -4,7 +4,7 @@ dek: "The Herons are nine points back in the East with a new coach three weeks i
 section: inter-miami
 author: John Lasak
 date: 2026-09-12
-draft: true
+draft: false
 tags: ["Inter Miami", "Kily Gonzalez", "Nashville SC", "MLS", "Lionel Messi", "Supporters Shield"]
 ---
 Inter Miami hosts Nashville SC tonight at Nu Stadium with a level of urgency that has nothing to do with the standings and everything to do with the coach on the sideline. This is Kily González's first meaningful test since taking over three weeks ago, and it's against the team sitting nine points ahead of his own in the Eastern Conference.
