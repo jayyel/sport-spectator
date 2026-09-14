@@ -2,9 +2,9 @@
 title: "The Dolphins' Pass Rush Was Supposed to Carry This Defense. It Vanished in Week 1."
 dek: "Miami's rebuild opened with a 27-13 loss in Las Vegas, and the most alarming part wasn't the score. It was that Chop Robinson, the one proven difference-maker on defense, didn't show up at all."
 section: dolphins
-author: John Lasak
+author: Sarah Teasly
 date: 2026-09-14
-draft: true
+draft: false
 tags: ["Dolphins", "Chop Robinson", "Jeff Hafley", "Malik Willis", "NFL Week 1"]
 ---
 The Dolphins entered the season with modest goals and an even more modest roster. Losing to the Raiders 27-13 on Sunday wasn't going to shock anybody. What should worry Miami is how it happened.
