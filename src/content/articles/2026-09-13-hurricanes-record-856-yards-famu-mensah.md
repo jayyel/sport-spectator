@@ -4,7 +4,7 @@ dek: "The Hurricanes piled up 856 yards and tied their scoring record Thursday, 
 section: hurricanes
 author: John Lasak
 date: 2026-09-13
-draft: false
+draft: true
 tags: ["Miami Hurricanes", "Darian Mensah", "Mario Cristobal", "college football", "Florida A&M"]
 ---
 No. 7 Miami beat Florida A&M 77-7 on Thursday night at Hard Rock Stadium, and by the time it was over, the box score didn't look like a real football game. The Hurricanes finished with 856 total yards, which broke the previous school record of 750 set against Ball State in 2024. They also tied Miami's all-time scoring mark of 77 points, a number the program had only hit twice before, both times against Savannah State.
