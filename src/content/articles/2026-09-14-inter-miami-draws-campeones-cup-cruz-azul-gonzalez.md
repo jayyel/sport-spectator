@@ -2,9 +2,9 @@
 title: "Inter Miami Can't Win the Games That Matter. Wednesday Is a Different Kind of Test."
 dek: "Three straight draws under new coach Kily González have left the Herons nine points behind Nashville in the East. A trophy final against Cruz Azul offers a chance to show the results aren't the whole story."
 section: inter-miami
-author: John Lasak
+author: Robert Clementes
 date: 2026-09-14
-draft: true
+draft: false
 tags: ["Inter Miami", "Kily Gonzalez", "Campeones Cup", "Lionel Messi", "MLS", "Nashville SC"]
 ---
 Inter Miami has not lost a game since Kily González took the bench. It also hasn't won one that mattered.
