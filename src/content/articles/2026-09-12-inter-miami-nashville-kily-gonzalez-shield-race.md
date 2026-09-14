@@ -2,7 +2,7 @@
 title: "Inter Miami Hosts Nashville Tonight With the Shield Race Already Slipping Away"
 dek: "The Herons are nine points back in the East with a new coach three weeks into the job. Tonight's game against the conference leader is about whether Kily González has actually fixed anything."
 section: inter-miami
-author: John Lasak
+author: Robert Clementes
 date: 2026-09-12
 draft: false
 tags: ["Inter Miami", "Kily Gonzalez", "Nashville SC", "MLS", "Lionel Messi", "Supporters Shield"]
