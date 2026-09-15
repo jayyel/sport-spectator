@@ -2,9 +2,9 @@
 title: "The Dolphins' Offensive Line Problem Showed Up in Week One, Right on Schedule"
 dek: "Miami lost its Jeff Hafley debut 27-13 in Las Vegas, and the issues that were supposed to define this rebuild all showed up in the same game."
 section: dolphins
-author: John Lasak
+author: Sarah Teasly
 date: 2026-09-15
-draft: true
+draft: false
 tags: ["Dolphins", "Malik Willis", "De'Von Achane", "Jeff Hafley", "NFL Week 1"]
 ---
 Malik Willis was sacked five times. De'Von Achane, coming off a Pro Bowl season, managed 36 yards on 11 carries. Miami finished with 259 total yards, well below what the offense averaged a year ago. Those three numbers explain the 27-13 loss to the Las Vegas Raiders on Sunday better than any single play did.
