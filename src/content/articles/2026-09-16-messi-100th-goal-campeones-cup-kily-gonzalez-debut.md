@@ -4,7 +4,7 @@ dek: "Inter Miami hosts Cruz Azul in the Campeones Cup with a brand-new head coa
 section: inter-miami
 author: John Lasak
 date: 2026-09-16
-draft: true
+draft: false
 tags: ["Inter Miami", "Lionel Messi", "Kily Gonzalez", "Campeones Cup", "Cruz Azul"]
 ---
 Lionel Messi has scored 99 goals for Inter Miami since he arrived in the summer of 2023. He's had three chances to make it 100 in the last week alone — a crossbar in the 50th minute against Nashville, another off the woodwork in the 77th, and a corner that deflected in off a defender for an own goal instead. Tonight, at Nu Stadium, he gets another shot, in a game that actually hands out a trophy.
