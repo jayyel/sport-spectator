@@ -2,9 +2,9 @@
 title: "Messi Won His Fifth Trophy in Miami. Then He Went and Found Don Garber."
 dek: "Inter Miami beat Cruz Azul to win the Campeones Cup and got a milestone 100th goal from Messi. The moment everyone is talking about happened after, on the trophy stage, with the MLS commissioner."
 section: inter-miami
-author: John Lasak
+author: Robert Clemente
 date: 2026-09-17
-draft: true
+draft: false
 tags: ["Inter Miami", "Lionel Messi", "Don Garber", "Campeones Cup", "MLS"]
 ---
 Inter Miami beat Cruz Azul 2-0 on Wednesday night at Nu Stadium to win the Campeones Cup, and it should have been a clean, feel-good story. New coach wins in his first game. Messi scores his 100th goal for the club. The Herons snap a nasty form slump with their first clean sheet in 12 matches. Instead, the story out of Miami on Thursday morning is Messi hunting down MLS commissioner Don Garber on the trophy stage to give him an earful.
