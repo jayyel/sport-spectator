@@ -2,9 +2,9 @@
 title: "Miami's Secondary, Not Its Offense, Faces the Real Test at Wake Forest"
 dek: "The Hurricanes have outscored two overmatched opponents by a combined 109 points. Tonight in Winston-Salem, a shorthanded defensive backfield finally meets a quarterback who can actually throw it."
 section: hurricanes
-author: John Lasak
+author: Sarah Teasly
 date: 2026-09-18
-draft: true
+draft: false
 tags: ["Miami Hurricanes", "Wake Forest", "college football", "ACC", "secondary injuries"]
 ---
 No. 5 Miami has spent two weeks torching overmatched opponents, and it hasn't had to answer a single hard question about its own defense. That changes tonight at Wake Forest, where the Hurricanes play their first game against a team that can actually throw the football — with a secondary that's already down three regulars.
