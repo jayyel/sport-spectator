@@ -98,15 +98,11 @@ const shiftDays = (ymd, n) => {
 };
 
 function urlsFor(team) {
-  const base = `https://site.api.espn.com/apis/site/v2/sports/${team.path}/scoreboard`;
-  // One day of padding on the front so a game that is tonight in Miami but
-  // tomorrow in UTC still lands inside the window. Trimmed again below.
-  const from = compact(shiftDays(etToday(), -1));
-  const to = compact(shiftDays(etToday(), 6));
-  return [
-    `${base}?dates=${from}-${to}&limit=100`,  // preferred: whole week
-    base,                                      // fallback: today only
-  ];
+  // ESPN ignores or mishandles ?dates= ranges on most leagues — NFL returns the
+  // current week, MLB a single day, and so on. So the scoreboard is used ONLY
+  // for today's live state; the week ahead comes from the season calendar,
+  // which uses the per-team schedule endpoint and is reliable.
+  return [`https://site.api.espn.com/apis/site/v2/sports/${team.path}/scoreboard`];
 }
 
 /**
@@ -175,35 +171,67 @@ function parseEvent(ev, team) {
   };
 }
 
+/**
+ * The row is assembled from two sources, because neither alone is enough:
+ *
+ *   calendar  — the week's fixtures. Built from ESPN's per-team schedule
+ *               endpoint, which reliably returns a whole season.
+ *   scoreboard — today only, for live state, scores and records.
+ *
+ * Calendar entries are the base; anything the scoreboard also knows about
+ * gets overlaid on top, so a game in progress shows its real score.
+ */
 async function buildSlate(env) {
-  const keys = Object.keys(TEAMS);
-  const results = await Promise.all(keys.map((k) => fetchLeague(TEAMS[k], env)));
+  const today = etToday();
+  const end = shiftDays(today, 6);
 
-  let games = [];
+  // Schedule for the next seven days, from the calendar.
+  let cal = null;
+  try { cal = JSON.parse((await env.SS.get('calendar')) || 'null'); } catch {}
+  if (!cal || !cal.byMonth || !Object.keys(cal.byMonth).length) cal = await buildCalendar(env);
+
+  const scheduled = Object.values(cal.byMonth || {}).flat()
+    .filter((g) => g.day >= today && g.day <= end);
+
+  // Today's scoreboards, for anything live or already final.
+  const keys = Object.keys(TEAMS);
+  const boards = await Promise.all(keys.map((k) => fetchLeague(TEAMS[k], env)));
+
   const errors = {};
   const diagnostics = {};
+  const live = new Map();
 
-  results.forEach((r, i) => {
-    games = games.concat(r.games);
-    diagnostics[keys[i]] = { found: r.games.length, sawEvents: r.sawEvents };
-    if (r.error) errors[keys[i]] = r.error;
+  boards.forEach((b, i) => {
+    if (b.error) errors[keys[i]] = b.error;
+    const upcoming = scheduled.filter((g) => g.teamKey === keys[i]).length;
+    diagnostics[keys[i]] = { scheduled: upcoming, onScoreboard: b.games.length };
+    for (const g of b.games) live.set(g.id, { ...g, teamKey: keys[i] });
   });
 
-  // Padding day removed here: keep today onward in ET, plus anything still live.
-  const todayET = etToday();
-  games = games.filter((g) => g.day >= todayET || g.state === 'in');
+  // Merge. Scoreboard wins on state and score; calendar keeps venue and network
+  // when the scoreboard hasn't published one.
+  const merged = new Map();
+  for (const g of scheduled) {
+    const l = live.get(g.id);
+    merged.set(g.id, l ? { ...g, ...l, network: l.network || g.network } : g);
+  }
+  // A game that began last night and is still running belongs here too.
+  for (const [id, g] of live) if (g.state === 'in' && !merged.has(id)) merged.set(id, g);
 
-  games.sort((a, b) => {
-    if (a.state === 'in' && b.state !== 'in') return -1;
-    if (b.state === 'in' && a.state !== 'in') return 1;
-    return new Date(a.start) - new Date(b.start);
-  });
+  const games = [...merged.values()]
+    .sort((a, b) => {
+      if (a.state === 'in' && b.state !== 'in') return -1;
+      if (b.state === 'in' && a.state !== 'in') return 1;
+      return new Date(a.start) - new Date(b.start);
+    })
+    .slice(0, 14);
 
   const payload = {
     updated: new Date().toISOString(),
+    window: [today, end],
     errors,
     diagnostics,
-    games: games.slice(0, 14),
+    games,
   };
   await env.SS.put('slate', JSON.stringify(payload));
   return payload;
@@ -391,6 +419,7 @@ async function fetchSeason(key, team, season, env) {
       abbr: c.team?.abbreviation || '',
       name: c.team?.shortDisplayName || c.team?.displayName || '',
       score: (typeof c.score === 'object' ? (c.score?.displayValue ?? c.score?.value) : c.score) ?? null,
+      record: c.records?.[0]?.summary || c.record?.[0]?.displayValue || '',
       isMine: mine(c),
     });
 
@@ -521,8 +550,9 @@ export default {
     const t = new Date(event.scheduledTime);
     const jobs = [buildSlate(env)];
     if (t.getUTCMinutes() % 15 === 0) jobs.push(buildWire(env));
-    // Season schedules change rarely; once a day is plenty.
-    if (t.getUTCHours() === 9 && t.getUTCMinutes() === 0) jobs.push(buildCalendar(env));
+    // Kickoff times and TV assignments are announced week to week, and the
+    // slate is built from this, so refresh it every six hours.
+    if (t.getUTCHours() % 6 === 3 && t.getUTCMinutes() === 0) jobs.push(buildCalendar(env));
     ctx.waitUntil(Promise.allSettled(jobs));
   },
 };
