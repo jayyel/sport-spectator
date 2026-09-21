@@ -4,7 +4,7 @@ dek: "Darian Mensah completed 24 straight passes to open the game and set confer
 section: hurricanes
 author: John Lasak
 date: 2026-09-19
-draft: true
+draft: false
 tags: ["Miami Hurricanes", "Darian Mensah", "Wake Forest", "CharMar Brown", "ACC football"]
 ---
 No. 5 Miami beat Wake Forest 33-20 on Friday night in Winston-Salem, and for about a quarter and a half, it looked like the kind of laugher the Hurricanes have been putting up all season. Then it looked like something else entirely.
