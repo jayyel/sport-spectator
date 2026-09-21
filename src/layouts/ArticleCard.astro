@@ -1,15 +1,53 @@
 ---
 /**
  * Designed fallback image for articles with no photograph.
- * Section colour, spectrum rail, headline. No licensing exposure,
- * and it renders for every future article automatically.
+ * Section colour, spectrum rail, headline, and — where one exists —
+ * a neon logo watermark. No file needed for a section to work.
  */
+
+/**
+ * Per-section logo watermark. A section with no entry here renders
+ * exactly as it does today, so you can add these one at a time.
+ *
+ *   src   file in public/logos/. A flat silhouette is all that's needed:
+ *         SVG or transparent PNG, any colour — shape is what matters.
+ *   neon  true (default) tints the silhouette with the section colour and
+ *         lights it, so the glow always matches the card and you only have
+ *         to draw one flat shape.
+ *         false renders your artwork exactly as drawn and only adds glow —
+ *         use this if you've hand-coloured the neon yourself.
+ */
+const LOGOS = {
+  'dolphins':             { src: '/logos/dolphins.svg' },
+  'hurricanes':           { src: '/logos/hurricanes.svg' },
+  'inter-miami':          { src: '/logos/inter-miami.svg' },
+  // 'heat':                 { src: '/logos/heat.svg' },
+  // 'high-school-football': { src: '/logos/hs-football.svg' },
+  // 'high-school-soccer':   { src: '/logos/hs-soccer.svg' },
+  // 'miami-soccer':         { src: '/logos/miami-soccer.svg' },
+  // 'gol-gala':             { src: '/logos/gol-gala.svg' },
+};
+
 const { title, section, color, label, size = 'hero' } = Astro.props;
 const short = title.length > 88 ? title.slice(0, 85).trimEnd() + '…' : title;
+
+const logo = LOGOS[section];
+const neon = logo ? logo.neon !== false : false;
+
+const cardStyle = [
+  `--c:var(--${color})`,
+  logo ? `--lg-src:url("${logo.src}")` : null,
+].filter(Boolean).join(';');
 ---
-<div class={`card-img ${size}`} style={`--c:var(--${color})`} aria-hidden="true">
+<div
+  class={`card-img ${size}${logo ? ' has-logo' : ''}`}
+  data-section={section}
+  style={cardStyle}
+  aria-hidden="true"
+>
   <span class="ci-rail"></span>
-  <span class="ci-mark"></span>
+  {logo && <span class={`ci-logo ${neon ? 'neon' : 'as-drawn'}`}></span>}
+  {(!logo || size === 'hero') && <span class="ci-mark"></span>}
   {size === 'hero' && <span class="ci-label">{label}</span>}
   <span class="ci-title">{short}</span>
   <span class="ci-brand">Sport Spectator</span>
@@ -26,13 +64,54 @@ const short = title.length > 88 ? title.slice(0, 85).trimEnd() + '…' : title;
 }
 .card-img.hero{aspect-ratio:16/9;padding:26px 28px 24px}
 .card-img.thumb{aspect-ratio:1;padding:9px}
-.ci-rail{position:absolute;inset:0 0 auto 0;height:3px;background:var(--spectrum)}
+.ci-rail{position:absolute;inset:0 0 auto 0;height:3px;background:var(--spectrum);z-index:2}
 .ci-mark{
-  position:absolute;top:22px;right:24px;width:26px;height:26px;border-radius:50%;
+  position:absolute;top:22px;right:24px;width:26px;height:26px;border-radius:50%;z-index:2;
   background:conic-gradient(from 200deg,var(--blue),var(--azure),var(--cyan),var(--pink),var(--coral),var(--orange),var(--blue));
   opacity:.9;
 }
 .ci-mark::after{content:"";position:absolute;inset:8px;border-radius:50%;background:var(--ink)}
+
+/* ── neon logo watermark ─────────────────────────────────
+   Two stacked layers make the neon: a wide blurred bloom
+   underneath, a crisper core on top. Both are the same
+   silhouette, tinted with the section colour.
+
+   Tune any section with the variables below — they are the
+   only things you should need to touch.                     */
+.ci-logo{
+  --lg-h:76%;        /* height, as a % of the card        */
+  --lg-aspect:1;     /* box ratio; raise for wide wordmarks */
+  --lg-right:3%;     /* distance from the right edge      */
+  --lg-bloom:.62;    /* glow strength                     */
+  --lg-core:.30;     /* solid shape strength              */
+  --lg-blur:19px;    /* glow spread                       */
+
+  position:absolute;z-index:0;pointer-events:none;
+  top:50%;right:var(--lg-right);transform:translateY(-50%);
+  height:var(--lg-h);aspect-ratio:var(--lg-aspect);
+}
+.ci-logo::before,.ci-logo::after{content:"";position:absolute;inset:0}
+
+/* Silhouette tinted with the section colour. Source colour is ignored,
+   so one flat shape per team is all you need to draw. */
+.ci-logo.neon::before,.ci-logo.neon::after{
+  background-color:var(--c);
+  -webkit-mask:var(--lg-src) no-repeat center / contain;
+  mask:var(--lg-src) no-repeat center / contain;
+}
+/* Your own artwork, colours intact. */
+.ci-logo.as-drawn::before,.ci-logo.as-drawn::after{
+  background:var(--lg-src) no-repeat center / contain;
+}
+.ci-logo::before{filter:blur(var(--lg-blur));opacity:var(--lg-bloom)}
+.ci-logo::after{opacity:var(--lg-core)}
+/* Hand-coloured art is already lit, so it needs less help. */
+.ci-logo.as-drawn{--lg-bloom:.42;--lg-core:.55}
+
+/* Text sits above the watermark. */
+.ci-label,.ci-title,.ci-brand{position:relative;z-index:1}
+
 .ci-label{
   font-size:10px;font-weight:800;letter-spacing:.20em;text-transform:uppercase;
   color:var(--c);margin-bottom:10px;
@@ -41,12 +120,27 @@ const short = title.length > 88 ? title.slice(0, 85).trimEnd() + '…' : title;
   font-size:clamp(19px,2.3vw,27px);font-weight:900;line-height:1.1;letter-spacing:-.022em;
   color:var(--cream);max-width:24ch;
 }
+/* Give the headline a little room so it doesn't run into the mark. */
+.card-img.hero.has-logo .ci-title{max-width:20ch}
 .ci-brand{
   font-size:9px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;
   color:var(--cream-28);margin-top:16px;
 }
+
 /* thumbnail variant: colour block only, no text */
 .card-img.thumb .ci-title,.card-img.thumb .ci-brand{display:none}
 .card-img.thumb .ci-mark{top:50%;right:50%;transform:translate(50%,-50%);width:20px;height:20px;opacity:.55}
 .card-img.thumb .ci-mark::after{inset:6px}
+/* In a thumb the logo is the whole point: centre it and light it harder. */
+.card-img.thumb .ci-logo{
+  --lg-h:64%;--lg-right:18%;--lg-bloom:.70;--lg-core:.52;--lg-blur:11px;
+}
+
+/* ── per-section tuning ──────────────────────────────────
+   Wide wordmarks want less height, tall crests want more.
+   Adjust after you see each one in place.                  */
+/* .card-img[data-section="inter-miami"] .ci-logo{ --lg-h:84%; }            */
+/* .card-img[data-section="dolphins"]    .ci-logo{ --lg-aspect:1.6; }      */
+
+
 </style>
