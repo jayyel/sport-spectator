@@ -4,7 +4,7 @@ dek: "A free kick against San Diego FC gave Kily González's coaching debut in M
 section: inter-miami
 author: John Lasak
 date: 2026-09-22
-draft: true
+draft: false
 tags: ["Inter Miami", "Lionel Messi", "Kily Gonzalez", "MLS", "Nashville SC"]
 ---
 Lionel Messi curled in a free kick from the right side Sunday night, his 101st goal in an Inter Miami shirt, and it still wasn't enough to win the game. San Diego FC answered twice, the second time in the final ten minutes, and Inter Miami's 2-2 draw at Nu Stadium marked its fourth consecutive tie in MLS play. It was also new head coach Cristian "Kily" González's first game in charge in the league — and it ended with him talking about defensive breakdowns instead of celebrating a result.
