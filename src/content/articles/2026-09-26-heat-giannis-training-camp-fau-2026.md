@@ -2,9 +2,9 @@
 title: "The Giannis Era Starts at FAU, Not Kaseya Center"
 dek: "The Heat hold media day Monday and open camp in Boca Raton the next day — the first real look at a roster gutted and rebuilt around a two-time MVP."
 section: heat
-author: John Lasak
+author: Robert Clemente
 date: 2026-09-26
-draft: true
+draft: false
 tags: ["Miami Heat", "Giannis Antetokounmpo", "Erik Spoelstra", "training camp", "Bam Adebayo"]
 ---
 The Heat are heading back to Boca Raton. The team announced this week that training camp will run September 29 through October 2 at Florida Atlantic University, closed to the public, before the group breaks camp and opens the preseason October 3 against Toronto in Quebec City. It's the seventh time in franchise history Miami has used FAU for camp, and the most consequential by a wide margin, because this is the first time Giannis Antetokounmpo puts on a Heat jersey in front of a coaching staff that has to figure out what to do with him.
