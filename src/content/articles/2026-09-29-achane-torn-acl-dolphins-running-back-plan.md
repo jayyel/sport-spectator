@@ -4,7 +4,7 @@ dek: "Miami's $64 million bet on De'Von Achane just lost its entire season. The 
 section: dolphins
 author: John Lasak
 date: 2026-09-29
-draft: true
+draft: false
 tags: ["Dolphins", "De'Von Achane", "Jeff Hafley", "NFL injuries", "Ollie Gordon II"]
 ---
 De'Von Achane's season ended on his third carry of the day. He picked up 11 yards on Miami's opening drive against Kansas City, got up, and stood still while teammates gathered around him. Two days and a battery of tests later, the Dolphins confirmed what everyone in Miami Gardens feared watching him walk gingerly to the medical tent: a torn ACL, an injured reserve stint, and a season now missing its best offensive player before October even starts.
