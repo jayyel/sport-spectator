@@ -4,7 +4,7 @@ dek: "Lionel Messi and Luis Suárez each scored twice as Inter Miami blew past D
 section: inter-miami
 author: John Lasak
 date: 2026-10-11
-draft: true
+draft: false
 tags: ["Inter Miami", "Lionel Messi", "Luis Suarez", "MLS playoffs", "Eastern Conference"]
 ---
 Lionel Messi scored twice in his first match since playing his final game for Argentina, and Luis Suárez matched him goal for goal, as Inter Miami blew out D.C. United 4-0 on Saturday night at Nu Stadium. The result snapped a five-match winless run at the worst possible time to be stuck in one — with the regular season closing out and playoff positioning still very much in flux.
