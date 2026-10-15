@@ -4,7 +4,7 @@ dek: "The Hurricanes are 5-0 and own the nation's stingiest scoring defense. Flo
 section: hurricanes
 author: John Lasak
 date: 2026-10-14
-draft: true
+draft: false
 tags: ["Miami Hurricanes", "Florida State", "Mario Cristobal", "ACC football", "Florida Cup"]
 ---
 No. 3 Miami hosts Florida State on Saturday night at Hard Rock Stadium, the 71st meeting in a series that dates back to 1951 and now carries the Florida Cup trophy. The Hurricanes are 5-0, ranked No. 3 in both major polls, and riding a two-game win streak over their oldest rival. Florida State arrives at 3-3 having just lost 44-20 at Louisville, and on Tuesday the program dismissed its top-ranked 2026 recruit, freshman cornerback Chuck Kennon, for what the school called conduct detrimental to the team.
