@@ -4,7 +4,7 @@ dek: "The Hurricanes beat Florida State 43-35 in a game that came down to a hold
 section: hurricanes
 author: John Lasak
 date: 2026-10-18
-draft: true
+draft: false
 tags: ["Miami Hurricanes", "Florida State", "Darian Mensah", "Malachi Toney", "College Football Playoff"]
 ---
 Miami needed double overtime and two overturned touchdowns to beat a 3-3 Florida State team Saturday night. That's the part that should worry the Hurricanes more than the final score suggests.
