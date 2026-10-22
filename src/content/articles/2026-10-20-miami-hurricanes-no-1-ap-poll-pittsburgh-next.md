@@ -2,9 +2,9 @@
 title: "Miami Is No. 1 for the First Time Since 2002. The Next Game Is Against the Team That Ended the Last Streak Like This."
 dek: "The Hurricanes topped the AP poll Sunday after surviving Florida State in double overtime. Pittsburgh, the program that ended Miami's last 15-game win streak in 2017, is up next at Hard Rock Stadium."
 section: hurricanes
-author: John Lasak
+author: Ross Archland
 date: 2026-10-20
-draft: true
+draft: false
 tags: ["Miami Hurricanes", "Mario Cristobal", "AP Poll", "Florida State", "Pittsburgh"]
 ---
 Miami is the No. 1 team in college football for the first time since Dec. 8, 2002. That's not a typo and it's not a hot-take ranking from some podcast — it's the actual AP Top 25, released Sunday, with the Hurricanes <cite index="20-9">receiving 1,697 points with 40 first-place votes after receiving 1,594 points and two first-place votes last week</cite>.
