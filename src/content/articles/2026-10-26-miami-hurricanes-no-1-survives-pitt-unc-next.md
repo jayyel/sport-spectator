@@ -4,7 +4,7 @@ dek: "The Hurricanes are 7-0 and sitting atop the AP poll for the first time sin
 section: hurricanes
 author: John Lasak
 date: 2026-10-26
-draft: true
+draft: false
 tags: ["Miami Hurricanes", "Mario Cristobal", "Darian Mensah", "Malachi Toney", "North Carolina Tar Heels"]
 ---
 Miami didn't blink in its first game as the No. 1 team in the country. The Hurricanes beat Pittsburgh 52-23 on Saturday at Hard Rock Stadium, and the final score undersold how comfortable it was. By halftime, Miami led 31-7 and Malachi Toney already had 159 receiving yards on 12 catches — more than Pitt's entire offense had produced to that point.
