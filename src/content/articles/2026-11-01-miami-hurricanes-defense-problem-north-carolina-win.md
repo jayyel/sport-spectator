@@ -4,7 +4,7 @@ dek: "The No. 1 Hurricanes are 8-0 after a 38-35 escape in Chapel Hill, but Core
 section: hurricanes
 author: John Lasak
 date: 2026-11-01
-draft: true
+draft: false
 tags: ["Miami Hurricanes", "Darian Mensah", "Mark Fletcher Jr.", "College Football Playoff", "North Carolina"]
 ---
 No. 1 Miami is 8-0. It also just needed a fourth-quarter fumble recovery to beat a North Carolina team that came in unranked and finished the night 4-4. That gap between the record and the performance is the story coming out of Chapel Hill.
