@@ -4,7 +4,7 @@ dek: "The No. 1 Hurricanes lost their first game of the year at Notre Dame, 31-2
 section: hurricanes
 author: John Lasak
 date: 2026-11-09
-draft: true
+draft: false
 tags: ["Miami Hurricanes", "Notre Dame", "Mario Cristobal", "College Football Playoff", "Darian Mensah"]
 ---
 Miami's perfect season lasted nine games. It ended Saturday night in South Bend, where Notre Dame beat the No. 1 Hurricanes 31-24 and did it by building a lead Miami couldn't quite erase.
