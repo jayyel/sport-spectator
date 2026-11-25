@@ -4,7 +4,7 @@ dek: "Mark Fletcher Jr.'s three touchdowns and a school-record field goal from J
 section: hurricanes
 author: John Lasak
 date: 2026-11-22
-draft: true
+draft: false
 tags: ["Miami Hurricanes", "ACC Championship", "Mark Fletcher Jr.", "Darian Mensah", "Wake Forest"]
 ---
 Miami fell behind by two touchdowns at Hard Rock Stadium on Saturday night and still walked away with more than a win. The Hurricanes' 28-20 comeback over Virginia Tech clinched a spot in the ACC Championship Game, and <cite index="37-4">Miami became the first team in any Power 4 conference this season to clinch a conference championship appearance.</cite>
